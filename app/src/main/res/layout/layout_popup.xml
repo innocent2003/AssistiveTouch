@@ -1,28 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="220dp"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@drawable/bg_popup">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <Button
-        android:id="@+id/btnHome"
-        android:layout_width="match_parent"
+    android:layout_width="260dp"
+    android:layout_height="260dp"
+    android:background="@drawable/bg_popup"
+    android:padding="20dp">
+
+    <!-- Lock -->
+
+    <LinearLayout
+        android:id="@+id/itemLock"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home"/>
+        android:gravity="center"
+        android:orientation="vertical"
 
-    <Button
-        android:id="@+id/btnSetting"
-        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:text="Lock"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+    <!-- Favorite -->
+
+    <LinearLayout
+        android:id="@+id/itemFavorite"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Setting"/>
+        android:orientation="vertical"
+        android:gravity="center"
 
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/itemLock"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:text="Favorite"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+    <!-- Clean -->
+
+    <LinearLayout
+        android:id="@+id/itemClean"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Close"/>
+        android:gravity="center"
+        android:orientation="vertical"
 
-</LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/itemLock"
+        app:layout_constraintStart_toEndOf="@id/itemFavorite"
+        app:layout_constraintEnd_toStartOf="@id/itemSetting"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:text="Clean"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+    <!-- Setting -->
+
+    <LinearLayout
+        android:id="@+id/itemSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+
+        app:layout_constraintTop_toBottomOf="@id/itemLock"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:text="Setting"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+    <!-- Home -->
+
+    <LinearLayout
+        android:id="@+id/itemHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:text="Home"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,9 @@ import android.view.WindowManager
 import com.example.assistivetouchclone.R
 import android.view.MotionEvent
 import android.widget.Button
+import com.example.assistivetouchclone.floating.FloatingManager
+import com.example.assistivetouchclone.floating.FloatingPopupManager
+import com.example.assistivetouchclone.floating.FloatingTouchListener
 import kotlin.math.abs
 
 class FloatingService : Service() {
@@ -36,6 +39,8 @@ class FloatingService : Service() {
     private lateinit var floatingView: View
 
     private lateinit var params: WindowManager.LayoutParams
+    private lateinit var manager: FloatingManager
+
 
     companion object {
 
@@ -48,9 +53,26 @@ class FloatingService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        createNotification()
+//        createNotification()
 
-        initFloatingButton()
+//        initFloatingButton()
+        manager = FloatingManager(this)
+        manager.show()
+
+        val popupManager = FloatingPopupManager(this, manager)
+
+        val listener = FloatingTouchListener(manager)
+
+        manager.floatingView.setOnTouchListener(listener)
+
+        listener.onClick = {
+
+            if (popupManager.isShowing())
+                popupManager.hide()
+            else
+                popupManager.show()
+
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -70,61 +92,61 @@ class FloatingService : Service() {
     /**
      * Tạo icon nổi
      */
-    private fun initFloatingButton() {
-
-        windowManager =
-            getSystemService(WINDOW_SERVICE) as WindowManager
-
-        floatingView =
-            LayoutInflater.from(this)
-                .inflate(R.layout.layout_floating, null)
-
-        params =
-            WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                else
-                    WindowManager.LayoutParams.TYPE_PHONE,
-
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-
-                PixelFormat.TRANSLUCENT
-            )
-
-        params.gravity = Gravity.TOP or Gravity.START
-
-        params.x = 100
-
-        params.y = 300
-
-        windowManager.addView(
-            floatingView,
-            params
-        )
-        setupTouchListener()
-        floatingView.setOnClickListener {
-
-            if (isPopupShowing) {
-
-                hidePopup()
-
-            } else {
-
-                showPopup()
-
-            }
-
-        }
-
-    }
-
-    /**
-     * Foreground Notification
-     */
-    @SuppressLint("ForegroundServiceType")
+//    private fun initFloatingButton() {
+//
+//        windowManager =
+//            getSystemService(WINDOW_SERVICE) as WindowManager
+//
+//        floatingView =
+//            LayoutInflater.from(this)
+//                .inflate(R.layout.layout_floating, null)
+//
+//        params =
+//            WindowManager.LayoutParams(
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+//                else
+//                    WindowManager.LayoutParams.TYPE_PHONE,
+//
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//
+//                PixelFormat.TRANSLUCENT
+//            )
+//
+//        params.gravity = Gravity.TOP or Gravity.START
+//
+//        params.x = 100
+//
+//        params.y = 300
+//
+//        windowManager.addView(
+//            floatingView,
+//            params
+//        )
+//        setupTouchListener()
+//        floatingView.setOnClickListener {
+//
+//            if (isPopupShowing) {
+//
+//                hidePopup()
+//
+//            } else {
+//
+//                showPopup()
+//
+//            }
+//
+//        }
+//
+//    }
+//
+//    /**
+//     * Foreground Notification
+//     */
+//    @SuppressLint("ForegroundServiceType")
     private fun createNotification() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -168,156 +190,156 @@ class FloatingService : Service() {
         )
 
     }
-    private fun setupTouchListener() {
-
-        floatingView.setOnTouchListener { _, event ->
-
-            when (event.action) {
-
-                MotionEvent.ACTION_DOWN -> {
-
-                    initialX = params.x
-                    initialY = params.y
-
-                    initialTouchX = event.rawX
-                    initialTouchY = event.rawY
-
-                    isDragging = false
-
-                    true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-
-                    val dx = (event.rawX - initialTouchX).toInt()
-                    val dy = (event.rawY - initialTouchY).toInt()
-
-                    if (kotlin.math.abs(dx) > 10 ||
-                        kotlin.math.abs(dy) > 10
-                    ) {
-                        isDragging = true
-                    }
-
-                    params.x = initialX + dx
-                    params.y = initialY + dy
-
-                    windowManager.updateViewLayout(
-                        floatingView,
-                        params
-                    )
-
-                    true
-                }
-
-                MotionEvent.ACTION_UP -> {
-
-                    if (!isDragging) {
-
-                        floatingView.performClick()
-
-                    } else {
-
-                        snapToEdge()
-
-                    }
-
-                    true
-                }
-
-                else -> false
-            }
-
-        }
-
-    }
-    private fun showPopup() {
-
-        popupView =
-            LayoutInflater.from(this)
-                .inflate(R.layout.layout_popup, null)
-
-        val popupParams =
-            WindowManager.LayoutParams(
-
-                600,
-
-                WindowManager.LayoutParams.WRAP_CONTENT,
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                else
-                    WindowManager.LayoutParams.TYPE_PHONE,
-
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-
-                PixelFormat.TRANSLUCENT
-
-            )
-
-        popupParams.gravity = Gravity.TOP or Gravity.START
-
-        popupParams.x = params.x + 80
-
-        popupParams.y = params.y
-
-        windowManager.addView(
-            popupView,
-            popupParams
-        )
-
-        isPopupShowing = true
-
-        popupView!!
-            .findViewById<Button>(R.id.btnClose)
-            .setOnClickListener {
-
-                hidePopup()
-
-            }
-
-    }
-    private fun hidePopup() {
-
-        popupView?.let {
-
-            windowManager.removeView(it)
-
-        }
-
-        popupView = null
-
-        isPopupShowing = false
-
-    }
-    private fun snapToEdge() {
-
-        val displayMetrics = resources.displayMetrics
-
-        val screenWidth = displayMetrics.widthPixels
-
-        val targetX = if (params.x < screenWidth / 2) {
-            0
-        } else {
-            screenWidth - floatingView.width
-        }
-
-        ValueAnimator.ofInt(params.x, targetX).apply {
-
-            duration = 250
-
-            addUpdateListener {
-
-                params.x = it.animatedValue as Int
-
-                windowManager.updateViewLayout(
-                    floatingView,
-                    params
-                )
-            }
-
-            start()
-        }
-    }
+//    private fun setupTouchListener() {
+//
+//        floatingView.setOnTouchListener { _, event ->
+//
+//            when (event.action) {
+//
+//                MotionEvent.ACTION_DOWN -> {
+//
+//                    initialX = params.x
+//                    initialY = params.y
+//
+//                    initialTouchX = event.rawX
+//                    initialTouchY = event.rawY
+//
+//                    isDragging = false
+//
+//                    true
+//                }
+//
+//                MotionEvent.ACTION_MOVE -> {
+//
+//                    val dx = (event.rawX - initialTouchX).toInt()
+//                    val dy = (event.rawY - initialTouchY).toInt()
+//
+//                    if (kotlin.math.abs(dx) > 10 ||
+//                        kotlin.math.abs(dy) > 10
+//                    ) {
+//                        isDragging = true
+//                    }
+//
+//                    params.x = initialX + dx
+//                    params.y = initialY + dy
+//
+//                    windowManager.updateViewLayout(
+//                        floatingView,
+//                        params
+//                    )
+//
+//                    true
+//                }
+//
+//                MotionEvent.ACTION_UP -> {
+//
+//                    if (!isDragging) {
+//
+//                        floatingView.performClick()
+//
+//                    } else {
+//
+//                        snapToEdge()
+//
+//                    }
+//
+//                    true
+//                }
+//
+//                else -> false
+//            }
+//
+//        }
+//
+//    }
+//    private fun showPopup() {
+//
+//        popupView =
+//            LayoutInflater.from(this)
+//                .inflate(R.layout.layout_popup, null)
+//
+//        val popupParams =
+//            WindowManager.LayoutParams(
+//
+//                600,
+//
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+//                else
+//                    WindowManager.LayoutParams.TYPE_PHONE,
+//
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//
+//                PixelFormat.TRANSLUCENT
+//
+//            )
+//
+//        popupParams.gravity = Gravity.TOP or Gravity.START
+//
+//        popupParams.x = params.x + 80
+//
+//        popupParams.y = params.y
+//
+//        windowManager.addView(
+//            popupView,
+//            popupParams
+//        )
+//
+//        isPopupShowing = true
+//
+////        popupView!!
+////            .findViewById<Button>(R.id.btnClose)
+////            .setOnClickListener {
+////
+////                hidePopup()
+////
+////            }
+//
+//    }
+//    private fun hidePopup() {
+//
+//        popupView?.let {
+//
+//            windowManager.removeView(it)
+//
+//        }
+//
+//        popupView = null
+//
+//        isPopupShowing = false
+//
+//    }
+//    private fun snapToEdge() {
+//
+//        val displayMetrics = resources.displayMetrics
+//
+//        val screenWidth = displayMetrics.widthPixels
+//
+//        val targetX = if (params.x < screenWidth / 2) {
+//            0
+//        } else {
+//            screenWidth - floatingView.width
+//        }
+//
+//        ValueAnimator.ofInt(params.x, targetX).apply {
+//
+//            duration = 250
+//
+//            addUpdateListener {
+//
+//                params.x = it.animatedValue as Int
+//
+//                windowManager.updateViewLayout(
+//                    floatingView,
+//                    params
+//                )
+//            }
+//
+//            start()
+//        }
+//    }
 
 
 }
