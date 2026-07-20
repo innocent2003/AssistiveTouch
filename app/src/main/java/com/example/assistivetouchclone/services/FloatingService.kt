@@ -6,6 +6,8 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
@@ -20,6 +22,7 @@ import android.widget.Button
 import kotlin.math.abs
 
 class FloatingService : Service() {
+    private var settingPopup: View? = null
     private var popupView: View? = null
 
     private var isPopupShowing = false
@@ -274,6 +277,31 @@ class FloatingService : Service() {
                 hidePopup()
 
             }
+        popupView!!
+            .findViewById<Button>(R.id.btnHome)
+            .setOnClickListener {
+
+                goHome()
+
+                hidePopup()
+
+            }
+        popupView!!
+            .findViewById<Button>(R.id.btnSetting)
+            .setOnClickListener {
+
+                showSettingPopup()
+
+            }
+        popupView!!
+            .findViewById<Button>(R.id.btnLock)
+            .setOnClickListener {
+
+                lockScreen()
+
+                hidePopup()
+
+            }
 
     }
     private fun hidePopup() {
@@ -317,6 +345,69 @@ class FloatingService : Service() {
 
             start()
         }
+    }
+
+    private fun goHome() {
+
+        val intent = Intent(Intent.ACTION_MAIN)
+
+        intent.addCategory(Intent.CATEGORY_HOME)
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        startActivity(intent)
+    }
+    private fun showSettingPopup() {
+
+        hidePopup()
+
+        settingPopup = LayoutInflater.from(this)
+            .inflate(R.layout.layout_setting_popup, null)
+
+        val lp = WindowManager.LayoutParams(
+            500,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+
+        lp.gravity = Gravity.TOP or Gravity.START
+
+        lp.x = params.x + 80
+        lp.y = params.y
+
+        windowManager.addView(settingPopup, lp)
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnCloseSetting)
+            .setOnClickListener {
+
+                windowManager.removeView(settingPopup)
+
+                settingPopup = null
+
+            }
+
+    }
+    private fun lockScreen() {
+
+        val dpm =
+            getSystemService(DEVICE_POLICY_SERVICE)
+                    as DevicePolicyManager
+
+        val component =
+            ComponentName(
+                this,
+                MyAdminReceiver::class.java
+            )
+
+        if (dpm.isAdminActive(component)) {
+
+            dpm.lockNow()
+
+        }
+
     }
 
 

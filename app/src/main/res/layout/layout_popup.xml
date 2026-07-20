@@ -20,6 +20,18 @@
         android:text="Setting"/>
 
     <Button
+        android:id="@+id/btnLock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lock"/>
+
+    <Button
+        android:id="@+id/btnFavourite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Favourite"/>
+
+    <Button
         android:id="@+id/btnClose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
