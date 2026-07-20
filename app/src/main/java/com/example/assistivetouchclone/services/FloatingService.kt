@@ -19,9 +19,12 @@ import android.view.WindowManager
 import com.example.assistivetouchclone.R
 import android.view.MotionEvent
 import android.widget.Button
+import android.widget.LinearLayout
+import com.example.assistivetouchclone.utils.SystemAction
 import kotlin.math.abs
 
 class FloatingService : Service() {
+    private var dimView: View? = null
     private var settingPopup: View? = null
     private var popupView: View? = null
 
@@ -234,6 +237,8 @@ class FloatingService : Service() {
 
     }
     private fun showPopup() {
+        hideAllPopup()
+        showDimView()
 
         popupView =
             LayoutInflater.from(this)
@@ -270,52 +275,88 @@ class FloatingService : Service() {
 
         isPopupShowing = true
 
-        popupView!!
-            .findViewById<Button>(R.id.btnClose)
-            .setOnClickListener {
 
-                hidePopup()
 
-            }
-        popupView!!
-            .findViewById<Button>(R.id.btnHome)
-            .setOnClickListener {
+//        popupView!!
+//            .findViewById<Button>(R.id.btnClose)
+//            .setOnClickListener {
+//
+//                hidePopup()
+//
+//            }
 
-                goHome()
 
-                hidePopup()
 
-            }
-        popupView!!
-            .findViewById<Button>(R.id.btnSetting)
-            .setOnClickListener {
+//        popupView!!
+//            .findViewById<Button>(R.id.btnHome)
+//            .setOnClickListener {
+//
+//                goHome()
+//
+//                hidePopup()
+//
+//            }
 
-                showSettingPopup()
+//        popupView!!
+//            .findViewById<LinearLayout>(R.id.btnHome)
 
-            }
-        popupView!!
-            .findViewById<Button>(R.id.btnLock)
-            .setOnClickListener {
+//        popupView!!
+//            .findViewById<Button>(R.id.btnSetting)
+//            .setOnClickListener {
+//                android.util.Log.d("POPUP", "Setting clicked")
+//                showSettingPopup()
+//
+//            }
+//        popupView!!
+//            .findViewById<Button>(R.id.btnLock)
+//            .setOnClickListener {
+//
+//                lockScreen()
+//
+//                hidePopup()
+//
+//            }
+//        popupView!!
+//            .findViewById<LinearLayout>(R.id.btnSetting)
+//
+//        popupView!!
+//            .findViewById<LinearLayout>(R.id.btnLock)
+//
+//        popupView!!
+//            .findViewById<LinearLayout>(R.id.btnFavourite)
+//
+//        popupView!!
+//            .findViewById<LinearLayout>(R.id.btnScreen)
 
-                lockScreen()
+        val btnHome = popupView!!.findViewById<LinearLayout>(R.id.btnHome)
+        val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
+        val btnLock = popupView!!.findViewById<LinearLayout>(R.id.btnLock)
+        val btnFavourite = popupView!!.findViewById<LinearLayout>(R.id.btnFavourite)
+        val btnScreen = popupView!!.findViewById<LinearLayout>(R.id.btnScreen)
 
-                hidePopup()
+        btnHome.setOnClickListener {
+            goHome()
+            hidePopup()
+        }
 
-            }
+        btnSetting.setOnClickListener {
+            showSettingPopup()
+        }
 
+        btnLock.setOnClickListener {
+            lockScreen()
+            hidePopup()
+        }
     }
     private fun hidePopup() {
-
         popupView?.let {
-
-            windowManager.removeView(it)
-
+            if (it.parent != null) {
+                windowManager.removeView(it)
+            }
         }
 
         popupView = null
-
         isPopupShowing = false
-
     }
     private fun snapToEdge() {
 
@@ -358,19 +399,21 @@ class FloatingService : Service() {
         startActivity(intent)
     }
     private fun showSettingPopup() {
-
+        android.util.Log.d("POPUP", "showSettingPopup")
         hidePopup()
 
         settingPopup = LayoutInflater.from(this)
             .inflate(R.layout.layout_setting_popup, null)
 
-        val lp = WindowManager.LayoutParams(
-            500,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        )
+        val lp = WindowManager.LayoutParams().apply {
+            copyFrom(params)
+
+            width = 500
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+
+            x = 100
+            y = 200
+        }
 
         lp.gravity = Gravity.TOP or Gravity.START
 
@@ -386,6 +429,66 @@ class FloatingService : Service() {
                 windowManager.removeView(settingPopup)
 
                 settingPopup = null
+
+            }
+        settingPopup!!
+            .findViewById<Button>(R.id.btnBack)
+            .setOnClickListener {
+
+                if (settingPopup?.parent != null) {
+                    windowManager.removeView(settingPopup)
+                }
+
+                settingPopup = null
+
+                showPopup()
+
+            }
+        settingPopup!!
+            .findViewById<Button>(R.id.btnWifi)
+            .setOnClickListener {
+
+                SystemAction.openWifi(this)
+
+            }
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnBluetooth)
+            .setOnClickListener {
+
+                SystemAction.openBluetooth(this)
+
+            }
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnVolumeUp)
+            .setOnClickListener {
+
+                SystemAction.volumeUp(this)
+
+            }
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnVolumeDown)
+            .setOnClickListener {
+
+                SystemAction.volumeDown(this)
+
+            }
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnSilent)
+            .setOnClickListener {
+
+                SystemAction.toggleSilent(this)
+
+            }
+
+        settingPopup!!
+            .findViewById<Button>(R.id.btnRotate)
+            .setOnClickListener {
+
+                SystemAction.openDisplay(this)
 
             }
 
@@ -408,6 +511,56 @@ class FloatingService : Service() {
 
         }
 
+    }
+    private fun showDimView() {
+
+        if (dimView != null) return
+
+        dimView = View(this)
+
+        val lp = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                WindowManager.LayoutParams.TYPE_PHONE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+
+        lp.gravity = Gravity.TOP or Gravity.START
+
+        dimView!!.setOnTouchListener { _, _ ->
+
+            hideAllPopup()
+
+            true
+        }
+
+        windowManager.addView(dimView, lp)
+    }
+    private fun hideAllPopup() {
+
+        popupView?.let {
+            if (it.parent != null)
+                windowManager.removeView(it)
+        }
+        popupView = null
+
+        settingPopup?.let {
+            if (it.parent != null)
+                windowManager.removeView(it)
+        }
+        settingPopup = null
+
+        dimView?.let {
+            if (it.parent != null)
+                windowManager.removeView(it)
+        }
+        dimView = null
+
+        isPopupShowing = false
     }
 
 
