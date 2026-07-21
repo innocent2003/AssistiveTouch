@@ -3,12 +3,38 @@ package com.example.assistivetouchclone.utils
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.os.Build
 import android.provider.Settings
 
 object SystemAction {
 
+    private var isFlashOn = false
+
+    fun toggleFlash(context: Context) {
+
+        val cameraManager =
+            context.getSystemService(Context.CAMERA_SERVICE)
+                    as CameraManager
+
+        try {
+
+            val cameraId = cameraManager.cameraIdList[0]
+
+            isFlashOn = !isFlashOn
+
+            cameraManager.setTorchMode(
+                cameraId,
+                isFlashOn
+            )
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+
+        }
+    }
     fun volumeUp(context: Context) {
         val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 

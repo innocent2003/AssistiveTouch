@@ -12,6 +12,7 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,8 @@ import com.example.assistivetouchclone.utils.SystemAction
 import kotlin.math.abs
 
 class FloatingService : Service() {
+    private var favouritePopup: View? = null
+    private var appPickerPopup: View? = null
     private var dimView: View? = null
     private var settingPopup: View? = null
     private var popupView: View? = null
@@ -277,56 +280,6 @@ class FloatingService : Service() {
 
 
 
-//        popupView!!
-//            .findViewById<Button>(R.id.btnClose)
-//            .setOnClickListener {
-//
-//                hidePopup()
-//
-//            }
-
-
-
-//        popupView!!
-//            .findViewById<Button>(R.id.btnHome)
-//            .setOnClickListener {
-//
-//                goHome()
-//
-//                hidePopup()
-//
-//            }
-
-//        popupView!!
-//            .findViewById<LinearLayout>(R.id.btnHome)
-
-//        popupView!!
-//            .findViewById<Button>(R.id.btnSetting)
-//            .setOnClickListener {
-//                android.util.Log.d("POPUP", "Setting clicked")
-//                showSettingPopup()
-//
-//            }
-//        popupView!!
-//            .findViewById<Button>(R.id.btnLock)
-//            .setOnClickListener {
-//
-//                lockScreen()
-//
-//                hidePopup()
-//
-//            }
-//        popupView!!
-//            .findViewById<LinearLayout>(R.id.btnSetting)
-//
-//        popupView!!
-//            .findViewById<LinearLayout>(R.id.btnLock)
-//
-//        popupView!!
-//            .findViewById<LinearLayout>(R.id.btnFavourite)
-//
-//        popupView!!
-//            .findViewById<LinearLayout>(R.id.btnScreen)
 
         val btnHome = popupView!!.findViewById<LinearLayout>(R.id.btnHome)
         val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
@@ -346,6 +299,10 @@ class FloatingService : Service() {
         btnLock.setOnClickListener {
             lockScreen()
             hidePopup()
+        }
+        btnFavourite.setOnClickListener {
+            Log.d("Favourite", "Favourite")
+            showFavouritePopup()
         }
     }
     private fun hidePopup() {
@@ -399,7 +356,7 @@ class FloatingService : Service() {
         startActivity(intent)
     }
     private fun showSettingPopup() {
-        android.util.Log.d("POPUP", "showSettingPopup")
+        Log.d("POPUP", "showSettingPopup")
         hidePopup()
 
         settingPopup = LayoutInflater.from(this)
@@ -491,6 +448,13 @@ class FloatingService : Service() {
                 SystemAction.openDisplay(this)
 
             }
+        settingPopup!!
+            .findViewById<Button>(R.id.btnFlash)
+            .setOnClickListener {
+
+                SystemAction.toggleFlash(this)
+
+            }
 
     }
     private fun lockScreen() {
@@ -561,6 +525,55 @@ class FloatingService : Service() {
         dimView = null
 
         isPopupShowing = false
+    }
+    private fun showFavouritePopup() {
+        hideAllPopup()
+        showDimView()
+        hidePopup()
+
+        favouritePopup = LayoutInflater.from(this)
+            .inflate(R.layout.layout_favourite_popup, null)
+
+        val lp = WindowManager.LayoutParams(
+            600,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                WindowManager.LayoutParams.TYPE_PHONE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+
+        lp.gravity = Gravity.TOP or Gravity.START
+        lp.x = params.x + 80
+        lp.y = params.y
+
+        windowManager.addView(favouritePopup, lp)
+
+//        val btnBack =
+//            favouritePopup!!.findViewById<LinearLayout>(R.id.btnBack)
+//
+//        val btnAddApp =
+//            favouritePopup!!.findViewById<LinearLayout>(R.id.btnAddApp)
+//
+//        btnBack.setOnClickListener {
+//
+//            if (favouritePopup?.parent != null) {
+//                windowManager.removeView(favouritePopup)
+//            }
+//
+//            favouritePopup = null
+//
+//            showPopup()
+//        }
+
+//        btnAddApp.setOnClickListener {
+//
+//            // Mở popup chọn ứng dụng
+////            showAppPickerPopup()
+//
+//        }
     }
 
 

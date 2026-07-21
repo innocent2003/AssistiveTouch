@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.example.assistivetouchclone.services.FloatingService
 import com.example.assistivetouchclone.services.MyAdminReceiver
 
 class MainActivity : AppCompatActivity() {
+    private val CAMERA_REQUEST = 100
 
     private lateinit var btnStart: Button
 
@@ -78,6 +80,7 @@ class MainActivity : AppCompatActivity() {
 
             // Xin quyền Device Admin
             requestDeviceAdmin()
+            requestCameraPermission()
 
             val serviceIntent = Intent(this, FloatingService::class.java)
 
@@ -105,5 +108,17 @@ class MainActivity : AppCompatActivity() {
         )
 
         startActivity(intent)
+    }
+    private fun requestCameraPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                requestPermissions(
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    CAMERA_REQUEST
+                )
+            }
+        }
     }
 }
