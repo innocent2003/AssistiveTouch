@@ -11,7 +11,8 @@ object OverlayUtils {
         width: Int,
         height: Int,
         x: Int,
-        y: Int
+        y: Int,
+        flags: Int = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
     ): WindowManager.LayoutParams {
         return WindowManager.LayoutParams(
             width,
@@ -20,7 +21,7 @@ object OverlayUtils {
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
                 WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            flags,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START

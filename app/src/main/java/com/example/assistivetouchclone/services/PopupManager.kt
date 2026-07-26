@@ -13,6 +13,13 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import com.example.assistivetouchclone.R
 import com.example.assistivetouchclone.utils.SystemAction
+import com.example.assistivetouchclone.AppInfo
+import com.example.assistivetouchclone.utils.ShortcutUtils
+import android.content.pm.ResolveInfo
+import android.widget.ImageView
+import android.widget.TextView
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 
 class PopupManager(
     private val service: Service,
@@ -140,7 +147,8 @@ class PopupManager(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             0,
-            0
+            0,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
         )
 
         dimView!!.setOnTouchListener { _, _ ->
@@ -157,6 +165,9 @@ class PopupManager(
 
         OverlayUtils.removeViewIfAttached(windowManager, settingPopup)
         settingPopup = null
+
+        OverlayUtils.removeViewIfAttached(windowManager, favouritePopup)
+        favouritePopup = null
 
         OverlayUtils.removeViewIfAttached(windowManager, dimView)
         dimView = null
@@ -178,5 +189,83 @@ class PopupManager(
         )
 
         windowManager.addView(favouritePopup, lp)
+        isPopupShowing = true
+
+        populateFavouriteList()
+    }
+
+    private fun populateFavouriteList() {
+        val root = favouritePopup ?: return
+
+        // Try to find a container in the layout by name; fallback to root if not present
+        val resId = service.resources.getIdentifier("fav_container", "id", service.packageName)
+        val container = if (resId != 0) root.findViewById<ViewGroup>(resId) else (root as? ViewGroup)
+
+        val pm = service.packageManager
+        val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
+        val apps = pm.queryIntentActivities(intent, 0)
+
+        val parent = container as? ViewGroup ?: return
+        parent.removeAllViews()
+
+        val itemPadding = (8 * service.resources.displayMetrics.density).toInt()
+
+        apps.forEach { ri: ResolveInfo ->
+            val label = ri.loadLabel(pm).toString()
+            val icon = ri.loadIcon(pm)
+            val pkg = ri.activityInfo.packageName
+
+            val appInfo = AppInfo(label, pkg, icon)
+
+            val item = LinearLayout(service).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(itemPadding, itemPadding, itemPadding, itemPadding)
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                isClickable = true
+                isFocusable = true
+            }
+
+            val iv = ImageView(service).apply {
+                setImageDrawable(icon)
+                val size = (40 * service.resources.displayMetrics.density).toInt()
+                layoutParams = LinearLayout.LayoutParams(size, size)
+            }
+
+            val tv = TextView(service).apply {
+                text = label
+                setPadding(itemPadding, 0, 0, 0)
+                layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            }
+
+            item.addView(iv)
+            item.addView(tv)
+
+            item.setOnClickListener {
+                // Launch the selected app
+                val launch = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                    component = android.content.ComponentName(pkg, ri.activityInfo.name)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                try {
+                    service.startActivity(launch)
+                } catch (t: Throwable) {
+                    // fallback: try package launch intent
+                    val pmLaunch = service.packageManager.getLaunchIntentForPackage(pkg)
+                    pmLaunch?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    pmLaunch?.let { service.startActivity(it) }
+                }
+                hideAllPopup()
+            }
+
+            item.setOnLongClickListener {
+                // Long-press to create a pinned shortcut
+                ShortcutUtils.createPinnedShortcut(service, appInfo)
+                hideAllPopup()
+                true
+            }
+
+            parent.addView(item)
+        }
     }
 }
