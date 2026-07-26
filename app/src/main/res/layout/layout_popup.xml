@@ -1,153 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="240dp"
+    android:layout_width="290dp"
     android:layout_height="wrap_content"
-    android:padding="20dp"
+    android:orientation="vertical"
+    android:padding="12dp"
     android:background="@drawable/bg_popup">
 
-    <!-- Lock -->
-    <LinearLayout
-        android:id="@+id/btnLock"
-        android:layout_width="wrap_content"
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:columnCount="3">
 
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_lock"
-            app:tint="@android:color/white"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Khóa khởi chạy"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"/>
-    </LinearLayout>
-
-    <!-- Favourite -->
-    <LinearLayout
-        android:id="@+id/btnFavourite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toBottomOf="@id/btnLock"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="25dp">
-
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_favourite"
-            app:tint="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Yêu\nthích"
+        <!-- Lock -->
+        <LinearLayout
+            android:id="@+id/btnAdd1"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
             android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:layout_marginTop="6dp"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
 
-    <!-- Home -->
-    <LinearLayout
-        android:id="@+id/btnHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="@id/btnFavourite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/add_24px"
+                app:tint="@android:color/white"/>
 
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_home"
-            app:tint="@android:color/white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chính"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:layout_marginTop="6dp"/>
-    </LinearLayout>
-
-    <!-- Setting -->
-    <LinearLayout
-        android:id="@+id/btnSetting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="@id/btnFavourite"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_settings"
-            app:tint="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cài đặt"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:layout_marginTop="6dp"/>
-    </LinearLayout>
-
-    <!-- Screen -->
-    <LinearLayout
-        android:id="@+id/btnScreen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toBottomOf="@id/btnHome"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="28dp">
-
-        <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_screen"
-            app:tint="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Màn\nhình"
+        <!-- Lock -->
+        <LinearLayout
+            android:id="@+id/btnLock"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
             android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:layout_marginTop="6dp"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/block_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Khóa"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Home -->
+        <LinearLayout
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/home_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Chính"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Favourite -->
+        <LinearLayout
+            android:id="@+id/btnFavourite"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/kid_star_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Yêu&#10;thích"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Screen -->
+        <LinearLayout
+            android:id="@+id/btnScreen"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/circle_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Màn&#10;hình"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Setting -->
+        <LinearLayout
+            android:id="@+id/btnSetting"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/settings_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cài đặt"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Back -->
+        <LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/arrow_left_alt_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+
+
+    </GridLayout>
+
+</LinearLayout>

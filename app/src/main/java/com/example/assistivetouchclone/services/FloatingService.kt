@@ -20,6 +20,7 @@ import android.view.WindowManager
 import com.example.assistivetouchclone.R
 import android.view.MotionEvent
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.example.assistivetouchclone.utils.SystemAction
 import kotlin.math.abs
@@ -79,6 +80,57 @@ class FloatingService : Service() {
     /**
      * Tạo icon nổi
      */
+//    private fun initFloatingButton() {
+//
+//        windowManager =
+//            getSystemService(WINDOW_SERVICE) as WindowManager
+//
+//        floatingView =
+//            LayoutInflater.from(this)
+//                .inflate(R.layout.layout_floating, null)
+//
+//        params =
+//            WindowManager.LayoutParams(
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+//                else
+//                    WindowManager.LayoutParams.TYPE_PHONE,
+//
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//
+//                PixelFormat.TRANSLUCENT
+//            )
+//
+//        params.gravity = Gravity.TOP or Gravity.START
+//
+//        params.x = 100
+//
+//        params.y = 300
+//
+//        windowManager.addView(
+//            floatingView,
+//            params
+//        )
+//        setupTouchListener()
+//        floatingView.setOnClickListener {
+//
+//            if (isPopupShowing) {
+//
+//                hidePopup()
+//
+//            } else {
+//
+//                showPopup()
+//
+//            }
+//
+//        }
+//
+//    }
+
     private fun initFloatingButton() {
 
         windowManager =
@@ -87,6 +139,38 @@ class FloatingService : Service() {
         floatingView =
             LayoutInflater.from(this)
                 .inflate(R.layout.layout_floating, null)
+
+
+        // ==============================
+        // LẤY ICON ĐƯỢC CHỌN
+        // ==============================
+
+        val imgFloatingIcon =
+            floatingView.findViewById<ImageView>(
+                R.id.imgFloat
+            )
+
+        val preferences =
+            getSharedPreferences(
+                "AssistiveSettings",
+                MODE_PRIVATE
+            )
+
+        val selectedIcon =
+            preferences.getInt(
+                "selected_icon",
+                R.drawable.mood_bad_24px
+            )
+
+        // Hiển thị icon đã chọn
+        imgFloatingIcon.setImageResource(
+            selectedIcon
+        )
+
+
+        // ==============================
+        // TẠO WINDOW PARAMS
+        // ==============================
 
         params =
             WindowManager.LayoutParams(
@@ -103,17 +187,40 @@ class FloatingService : Service() {
                 PixelFormat.TRANSLUCENT
             )
 
-        params.gravity = Gravity.TOP or Gravity.START
+
+        // ==============================
+        // VỊ TRÍ BAN ĐẦU
+        // ==============================
+
+        params.gravity =
+            Gravity.TOP or Gravity.START
 
         params.x = 100
 
         params.y = 300
 
+
+        // ==============================
+        // HIỂN THỊ FLOATING BUTTON
+        // ==============================
+
         windowManager.addView(
             floatingView,
             params
         )
+
+
+        // ==============================
+        // KÉO FLOATING BUTTON
+        // ==============================
+
         setupTouchListener()
+
+
+        // ==============================
+        // CLICK FLOATING BUTTON
+        // ==============================
+
         floatingView.setOnClickListener {
 
             if (isPopupShowing) {
@@ -379,82 +486,68 @@ class FloatingService : Service() {
 
         windowManager.addView(settingPopup, lp)
 
-        settingPopup!!
-            .findViewById<Button>(R.id.btnCloseSetting)
-            .setOnClickListener {
 
-                windowManager.removeView(settingPopup)
 
-                settingPopup = null
+        val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
 
-            }
-        settingPopup!!
-            .findViewById<Button>(R.id.btnBack)
-            .setOnClickListener {
+        val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
 
-                if (settingPopup?.parent != null) {
-                    windowManager.removeView(settingPopup)
-                }
+        val btnBluetooth = settingPopup!!.findViewById<LinearLayout>(R.id.btnBluetooth)
 
-                settingPopup = null
+        val btnRotate = settingPopup!!.findViewById<LinearLayout>(R.id.btnRotate)
 
-                showPopup()
+        val btnLocation = settingPopup!!.findViewById<LinearLayout>(R.id.btnLocation)
 
-            }
-        settingPopup!!
-            .findViewById<Button>(R.id.btnWifi)
-            .setOnClickListener {
+        val btnVolumeUp = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeUp)
 
-                SystemAction.openWifi(this)
+        val btnVolumeDown = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeDown)
 
-            }
+        val btnSilent = settingPopup!!.findViewById<LinearLayout>(R.id.btnSilent)
 
-        settingPopup!!
-            .findViewById<Button>(R.id.btnBluetooth)
-            .setOnClickListener {
+        val btnFlash = settingPopup!!.findViewById<LinearLayout>(R.id.btnFlash)
 
-                SystemAction.openBluetooth(this)
+        btnBack.setOnClickListener {
 
-            }
+            hideAllPopup()
 
-        settingPopup!!
-            .findViewById<Button>(R.id.btnVolumeUp)
-            .setOnClickListener {
+            showPopup()
+        }
 
-                SystemAction.volumeUp(this)
+        btnWifi.setOnClickListener {
+            SystemAction.openWifi(this)
+        }
 
-            }
+        btnBluetooth.setOnClickListener {
+            SystemAction.openBluetooth(this)
+        }
 
-        settingPopup!!
-            .findViewById<Button>(R.id.btnVolumeDown)
-            .setOnClickListener {
+        btnRotate.setOnClickListener {
+            SystemAction.openDisplay(this)
+        }
 
-                SystemAction.volumeDown(this)
+        btnLocation.setOnClickListener {
+            // Mở màn hình Location
+            startActivity(
+                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
 
-            }
+        btnVolumeUp.setOnClickListener {
+            SystemAction.volumeUp(this)
+        }
 
-        settingPopup!!
-            .findViewById<Button>(R.id.btnSilent)
-            .setOnClickListener {
+        btnVolumeDown.setOnClickListener {
+            SystemAction.volumeDown(this)
+        }
 
-                SystemAction.toggleSilent(this)
+        btnSilent.setOnClickListener {
+            SystemAction.toggleSilent(this)
+        }
 
-            }
-
-        settingPopup!!
-            .findViewById<Button>(R.id.btnRotate)
-            .setOnClickListener {
-
-                SystemAction.openDisplay(this)
-
-            }
-        settingPopup!!
-            .findViewById<Button>(R.id.btnFlash)
-            .setOnClickListener {
-
-                SystemAction.toggleFlash(this)
-
-            }
+        btnFlash.setOnClickListener {
+            SystemAction.toggleFlash(this)
+        }
 
     }
     private fun lockScreen() {
@@ -551,30 +644,9 @@ class FloatingService : Service() {
 
         windowManager.addView(favouritePopup, lp)
 
-//        val btnBack =
-//            favouritePopup!!.findViewById<LinearLayout>(R.id.btnBack)
-//
-//        val btnAddApp =
-//            favouritePopup!!.findViewById<LinearLayout>(R.id.btnAddApp)
-//
-//        btnBack.setOnClickListener {
-//
-//            if (favouritePopup?.parent != null) {
-//                windowManager.removeView(favouritePopup)
-//            }
-//
-//            favouritePopup = null
-//
-//            showPopup()
-//        }
 
-//        btnAddApp.setOnClickListener {
-//
-//            // Mở popup chọn ứng dụng
-////            showAppPickerPopup()
-//
-//        }
     }
+
 
 
 }

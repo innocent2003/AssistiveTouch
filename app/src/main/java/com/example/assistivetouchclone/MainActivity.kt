@@ -9,18 +9,26 @@ import androidx.core.view.WindowInsetsCompat
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 
 import android.provider.Settings
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.Switch
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.assistivetouchclone.services.FloatingService
 import com.example.assistivetouchclone.services.MyAdminReceiver
+import com.google.android.material.card.MaterialCardView
 
 class MainActivity : AppCompatActivity() {
     private val CAMERA_REQUEST = 100
+    private lateinit var switchAssistive: Switch
+    private lateinit var cardAssistive: MaterialCardView
+    private lateinit var txtStatus: TextView
 
     private lateinit var btnStart: Button
 
@@ -30,37 +38,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btnStart = findViewById(R.id.btnStart)
-//
-//        btnStart.setOnClickListener {
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//                if (!Settings.canDrawOverlays(this)) {
-//
-//                    val intent = Intent(
-//                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-//                        Uri.parse("package:$packageName")
-//                    )
-//
-//                    startActivity(intent)
-//
-//                    return@setOnClickListener
-//                }
-//            }
-//
-//            val serviceIntent = Intent(this, FloatingService::class.java)
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//
-//                startForegroundService(serviceIntent)
-//
-//            } else {
-//
-//                startService(serviceIntent)
-//
-//            }
-//
-//        }
+        switchAssistive = findViewById(R.id.switchAssistive)
+        cardAssistive = findViewById(R.id.cardAssistive)
+        txtStatus = findViewById(R.id.txtStatus)
+        val layoutTuyChinh = findViewById<LinearLayout>(R.id.layoutTuyChinh)
+
+
+        layoutTuyChinh.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                IconActivity::class.java
+            )
+
+            startActivity(intent)
+        }
         btnStart.setOnClickListener {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -88,6 +80,43 @@ class MainActivity : AppCompatActivity() {
                 startForegroundService(serviceIntent)
             else
                 startService(serviceIntent)
+        }
+        switchAssistive.setOnCheckedChangeListener { _, isChecked ->
+
+            updateUI(isChecked)
+
+            val serviceIntent = Intent(this, FloatingService::class.java)
+
+            if (isChecked) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                    if (!Settings.canDrawOverlays(this)) {
+
+                        startActivity(
+                            Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:$packageName")
+                            )
+                        )
+
+                        switchAssistive.isChecked = false
+                        return@setOnCheckedChangeListener
+                    }
+                }
+
+                requestDeviceAdmin()
+                requestCameraPermission()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    startForegroundService(serviceIntent)
+                else
+                    startService(serviceIntent)
+
+            } else {
+
+                stopService(serviceIntent)
+            }
         }
 
     }
@@ -121,4 +150,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun updateUI(enable: Boolean) {
+
+        if (enable) {
+
+            cardAssistive.setCardBackgroundColor(Color.parseColor("#4285F4"))
+
+            txtStatus.text = "Đã bật"
+
+            btnStart.text = "Start Floating Button"
+
+        } else {
+
+            cardAssistive.setCardBackgroundColor(Color.parseColor("#9E9E9E"))
+
+            txtStatus.text = "Đã tắt"
+
+            btnStart.text = "Stop Floating Button"
+        }
+
+    }
+
+
+
+
 }
