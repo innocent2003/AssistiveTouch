@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="290dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:padding="16dp"
+    android:clipToPadding="false"
     android:background="@drawable/bg_popup">
 
     <GridLayout
@@ -99,7 +100,9 @@
             android:layout_columnWeight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="38dp"
@@ -111,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Yêu&#10;thích"
+                android:text="Favourite"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -151,7 +154,9 @@
             android:layout_columnWeight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="38dp"
@@ -163,7 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Cài đặt"
+                android:text="Settings"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>

@@ -35,7 +35,15 @@ class FloatingService : Service() {
         popupManager = PopupManager(this, windowManager, floatingManager)
 
         floatingManager.onClick = {
-            if (popupManager.isPopupShowing) popupManager.hidePopup() else popupManager.showPopup()
+            try {
+                if (popupManager.isPopupShowing) {
+                    popupManager.hidePopup()
+                } else {
+                    popupManager.showPopup()
+                }
+            } catch (t: Throwable) {
+                popupManager.hideAllPopup(showFloatingIcon = true, animate = false)
+            }
         }
     }
 

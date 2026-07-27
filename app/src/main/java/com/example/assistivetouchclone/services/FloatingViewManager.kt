@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import com.example.assistivetouchclone.R
 
@@ -44,6 +46,13 @@ class FloatingViewManager(
 
         setupTouchListener()
 
+        floatingView.isClickable = true
+        floatingView.isFocusable = true
+        floatingView.visibility = View.VISIBLE
+        floatingView.alpha = 1f
+        floatingView.scaleX = 1f
+        floatingView.scaleY = 1f
+
         floatingView.setOnClickListener {
             if (!isDragging) onClick()
         }
@@ -53,6 +62,23 @@ class FloatingViewManager(
         if (::floatingView.isInitialized) {
             OverlayUtils.removeViewIfAttached(windowManager, floatingView)
         }
+    }
+
+    fun hideFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+        floatingView.isClickable = false
+        floatingView.isFocusable = false
+        floatingView.visibility = View.INVISIBLE
+    }
+
+    fun showFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+        floatingView.isClickable = true
+        floatingView.isFocusable = true
+        floatingView.visibility = View.VISIBLE
+        floatingView.alpha = 1f
+        floatingView.scaleX = 1f
+        floatingView.scaleY = 1f
     }
 
     private fun setupTouchListener() {

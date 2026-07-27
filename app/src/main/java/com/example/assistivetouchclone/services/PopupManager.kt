@@ -20,6 +20,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
 
 class PopupManager(
     private val service: Service,
@@ -32,9 +34,18 @@ class PopupManager(
     private var dimView: View? = null
 
     var isPopupShowing = false
+    private var isTransitioning = false
 
     fun showPopup() {
-        hideAllPopup()
+        if (isTransitioning || isPopupShowing) return
+
+        isTransitioning = true
+        try {
+            hideAllPopup(showFloatingIcon = false, animate = false)
+        } catch (t: Throwable) {
+            isTransitioning = false
+            return
+        }
         showDimView()
 
         popupView = LayoutInflater.from(service).inflate(R.layout.layout_popup, null)
@@ -46,8 +57,20 @@ class PopupManager(
             floatingManager.params.y
         )
 
-        windowManager.addView(popupView, popupParams)
-        isPopupShowing = true
+        try {
+            windowManager.addView(popupView, popupParams)
+        } catch (t: Throwable) {
+            isTransitioning = false
+            isPopupShowing = false
+            popupView = null
+            return
+        }
+
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(popupView) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         val btnHome = popupView!!.findViewById<LinearLayout>(R.id.btnHome)
         val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
@@ -72,9 +95,16 @@ class PopupManager(
     }
 
     fun hidePopup() {
-        OverlayUtils.removeViewIfAttached(windowManager, popupView)
+        if (isTransitioning) return
+
+        val viewToClose = popupView
         popupView = null
+        isTransitioning = true
         isPopupShowing = false
+        animatePopupOut(viewToClose) {
+            isTransitioning = false
+            floatingManager.showFloatingIcon()
+        }
     }
 
     fun showSettingPopup() {
@@ -93,6 +123,11 @@ class PopupManager(
         lp.y = floatingManager.params.y
 
         windowManager.addView(settingPopup, lp)
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(settingPopup) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
         val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
@@ -159,24 +194,44 @@ class PopupManager(
         windowManager.addView(dimView, lp)
     }
 
-    fun hideAllPopup() {
-        OverlayUtils.removeViewIfAttached(windowManager, popupView)
+    fun hideAllPopup(showFloatingIcon: Boolean = true, animate: Boolean = true) {
+        val currentPopup = popupView
+        val currentSettingPopup = settingPopup
+        val currentFavouritePopup = favouritePopup
+        val currentDimView = dimView
+
         popupView = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, settingPopup)
         settingPopup = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, favouritePopup)
         favouritePopup = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, dimView)
         dimView = null
 
         isPopupShowing = false
+
+        if (animate) {
+            listOf(currentPopup, currentSettingPopup, currentFavouritePopup).forEach { view ->
+                if (view != null) {
+                    animatePopupOut(view) {
+                        OverlayUtils.removeViewIfAttached(windowManager, view)
+                    }
+                }
+            }
+        } else {
+            listOf(currentPopup, currentSettingPopup, currentFavouritePopup).forEach { view ->
+                OverlayUtils.removeViewIfAttached(windowManager, view)
+            }
+        }
+
+        if (currentDimView != null) {
+            OverlayUtils.removeViewIfAttached(windowManager, currentDimView)
+        }
+
+        if (showFloatingIcon) {
+            floatingManager.showFloatingIcon()
+        }
     }
 
     fun showFavouritePopup() {
-        hideAllPopup()
+        hideAllPopup(showFloatingIcon = false)
         showDimView()
 
         favouritePopup = LayoutInflater.from(service).inflate(R.layout.layout_favourite_popup, null)
@@ -189,9 +244,59 @@ class PopupManager(
         )
 
         windowManager.addView(favouritePopup, lp)
-        isPopupShowing = true
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(favouritePopup) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         populateFavouriteList()
+    }
+
+    private fun animatePopupIn(view: View?, onComplete: (() -> Unit)? = null) {
+        if (view == null) {
+            onComplete?.invoke()
+            return
+        }
+
+        view.alpha = 0f
+        view.scaleX = 0.9f
+        view.scaleY = 0.9f
+        view.translationY = 24f
+
+        view.animate().cancel()
+        view.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .translationY(0f)
+            .setDuration(220)
+            .setInterpolator(OvershootInterpolator(0.95f))
+            .withEndAction {
+                onComplete?.invoke()
+            }
+            .start()
+    }
+
+    private fun animatePopupOut(view: View?, onComplete: (() -> Unit)? = null) {
+        if (view == null) {
+            onComplete?.invoke()
+            return
+        }
+
+        view.animate().cancel()
+        view.animate()
+            .alpha(0f)
+            .scaleX(0.92f)
+            .scaleY(0.92f)
+            .translationY(18f)
+            .setDuration(180)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction {
+                OverlayUtils.removeViewIfAttached(windowManager, view)
+                onComplete?.invoke()
+            }
+            .start()
     }
 
     private fun populateFavouriteList() {
