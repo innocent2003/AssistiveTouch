@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="290dp"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="12dp"
     android:background="@drawable/bg_popup">
@@ -12,9 +13,9 @@
         android:layout_height="wrap_content"
         android:columnCount="3">
 
-        <!-- Lock -->
+        <!-- Wifi -->
         <LinearLayout
-            android:id="@+id/btnAdd1"
+            android:id="@+id/btnWifi"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_columnWeight="1"
@@ -26,49 +27,21 @@
             <ImageView
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:src="@drawable/add_24px"
+                android:src="@drawable/wifi_24px"
                 app:tint="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text=""
-                android:textAlignment="center"
+                android:text="Wifi"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
         </LinearLayout>
 
-        <!-- Lock -->
+        <!-- Bluetooth -->
         <LinearLayout
-            android:id="@+id/btnLock"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/block_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Khóa"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Home -->
-        <LinearLayout
-            android:id="@+id/btnHome"
+            android:id="@+id/btnBluetooth"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_columnWeight="1"
@@ -79,21 +52,22 @@
             <ImageView
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:src="@drawable/home_24px"
+                android:src="@drawable/bluetooth_24px"
                 app:tint="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Chính"
+                android:text="Bluetooth"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"/>
+                android:textAlignment="center"
+                android:textSize="16sp"/>
         </LinearLayout>
 
-        <!-- Favourite -->
+        <!-- Rotate -->
         <LinearLayout
-            android:id="@+id/btnFavourite"
+            android:id="@+id/btnRotate"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_columnWeight="1"
@@ -104,22 +78,22 @@
             <ImageView
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:src="@drawable/kid_star_24px"
+                android:src="@drawable/mobile_rotate_lock_24px"
                 app:tint="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Yêu&#10;thích"
+                android:text="Khóa&#10;xoay"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
 
-        <!-- Screen -->
+        <!-- Location -->
         <LinearLayout
-            android:id="@+id/btnScreen"
+            android:id="@+id/btnLocation"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_columnWeight="1"
@@ -130,48 +104,20 @@
             <ImageView
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:src="@drawable/circle_24px"
+                android:src="@drawable/near_me_24px"
                 app:tint="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Màn&#10;hình"
-                android:textAlignment="center"
+                android:text="Vị trí"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
 
-        <!-- Setting -->
         <LinearLayout
-            android:id="@+id/btnSetting"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/settings_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Cài đặt"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Back -->
-        <LinearLayout
-            android:id="@+id/btnBack"
+            android:id="@+id/btnBackSetting"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_columnWeight="1"
@@ -190,11 +136,119 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text=""
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textAlignment="center"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Volume Up -->
+        <LinearLayout
+            android:id="@+id/btnVolumeUp"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/volume_up_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Tăng âm&#10;lượng"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Volume Down -->
+
+
+        <!-- Silent -->
+        <LinearLayout
+            android:id="@+id/btnSilent"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/notifications_active_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Bình&#10;thường"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <!-- Flash -->
+        <LinearLayout
+            android:id="@+id/btnFlash"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/highlight_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Đèn pin"
+                android:textColor="@android:color/white"
+                android:textAlignment="center"
+                android:textSize="15sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/btnVolumeDown"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/volume_down_24px"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Giảm âm&#10;lượng"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
         </LinearLayout>
 
 
 
     </GridLayout>
+
 
 </LinearLayout>

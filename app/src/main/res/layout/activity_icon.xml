@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#FAFAFA">
+
+    <!-- TOP BAR -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#4285F4"
+        android:paddingHorizontal="20dp">
+
+        <!-- Nút Back -->
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_media_previous"
+            app:tint="@android:color/white" />
+
+        <!-- Tiêu đề -->
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="25dp"
+            android:text="Biểu tượng"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <!-- Nút OK -->
+
+        <ImageView
+            android:id="@+id/btnDone"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_save"
+            app:tint="@android:color/white" />
+
+    </LinearLayout>
+
+
+    <!-- ICON LIST -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="4"
+            android:padding="15dp">
+
+            <!-- ICON 1 -->
+
+            <ImageView
+                android:id="@+id/icon1"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/mood_bad_24px"
+                android:scaleType="centerInside" />
+
+
+            <!-- ICON 2 -->
+
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/mood_heart_24px"
+                android:scaleType="centerInside" />
+
+
+            <!-- ICON 3 -->
+
+            <ImageView
+                android:id="@+id/icon3"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/sentiment_calm_24px"
+                android:scaleType="centerInside" />
+
+
+            <!-- ICON 4 -->
+
+            <ImageView
+                android:id="@+id/icon4"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/sentiment_satisfied_24px"
+                android:scaleType="centerInside" />
+
+        </GridLayout>
+
+    </ScrollView>
+
+</LinearLayout>
