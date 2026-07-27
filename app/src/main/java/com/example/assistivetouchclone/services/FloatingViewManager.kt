@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import com.example.assistivetouchclone.R
 
@@ -47,6 +49,38 @@ class FloatingViewManager(
         floatingView.setOnClickListener {
             if (!isDragging) onClick()
         }
+    }
+
+    fun hideFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+
+        floatingView.animate().cancel()
+        floatingView.animate()
+            .alpha(0f)
+            .scaleX(0.88f)
+            .scaleY(0.88f)
+            .setDuration(140)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction { floatingView.visibility = View.INVISIBLE }
+            .start()
+    }
+
+    fun showFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+
+        floatingView.visibility = View.VISIBLE
+        floatingView.alpha = 0f
+        floatingView.scaleX = 0.88f
+        floatingView.scaleY = 0.88f
+
+        floatingView.animate().cancel()
+        floatingView.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(180)
+            .setInterpolator(OvershootInterpolator(0.95f))
+            .start()
     }
 
     fun destroy() {
