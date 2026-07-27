@@ -95,7 +95,10 @@ class PopupManager(
     }
 
     fun showSettingPopup() {
-        hidePopup()
+        if (isTransitioning) return
+
+        isTransitioning = true
+        hideAllPopup(showFloatingIcon = false, animate = false)
 
         settingPopup = LayoutInflater.from(service).inflate(R.layout.layout_setting_popup, null)
 
@@ -212,7 +215,10 @@ class PopupManager(
     }
 
     fun showFavouritePopup() {
-        hideAllPopup()
+        if (isTransitioning) return
+
+        isTransitioning = true
+        hideAllPopup(showFloatingIcon = false, animate = false)
         showDimView()
 
         favouritePopup = LayoutInflater.from(service).inflate(R.layout.layout_favourite_popup, null)
