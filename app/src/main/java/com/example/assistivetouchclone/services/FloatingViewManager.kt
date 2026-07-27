@@ -2,6 +2,7 @@ package com.example.assistivetouchclone.services
 
 import android.animation.ValueAnimator
 import android.app.Service
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -25,15 +26,21 @@ class FloatingViewManager(
     private var initialTouchX = 0f
     private var initialTouchY = 0f
     private var isDragging = false
+    private lateinit var preferences: SharedPreferences
+    private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "selected_icon") {
+            applySelectedIcon()
+        }
+    }
 
     fun init() {
         floatingView = LayoutInflater.from(service)
             .inflate(R.layout.layout_floating, null)
 
-        val imgFloatingIcon = floatingView.findViewById<ImageView>(R.id.imgFloat)
-        val preferences = service.getSharedPreferences("AssistiveSettings", Service.MODE_PRIVATE)
-        val selectedIcon = preferences.getInt("selected_icon", R.drawable.mood_bad_24px)
-        imgFloatingIcon.setImageResource(selectedIcon)
+        preferences = service.getSharedPreferences("AssistiveSettings", Service.MODE_PRIVATE)
+        preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
+
+        applySelectedIcon()
 
         params = OverlayUtils.createOverlayLayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -49,6 +56,14 @@ class FloatingViewManager(
         floatingView.setOnClickListener {
             if (!isDragging) onClick()
         }
+    }
+
+    fun applySelectedIcon() {
+        if (!::floatingView.isInitialized) return
+
+        val imgFloatingIcon = floatingView.findViewById<ImageView>(R.id.imgFloat)
+        val selectedIcon = preferences.getInt("selected_icon", R.drawable.mood_bad_24px)
+        imgFloatingIcon.setImageResource(selectedIcon)
     }
 
     fun hideFloatingIcon() {
@@ -85,6 +100,7 @@ class FloatingViewManager(
 
     fun destroy() {
         if (::floatingView.isInitialized) {
+            preferences.unregisterOnSharedPreferenceChangeListener(preferenceListener)
             OverlayUtils.removeViewIfAttached(windowManager, floatingView)
         }
     }

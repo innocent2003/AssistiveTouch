@@ -53,6 +53,7 @@ class PopupManager(
         )
 
         windowManager.addView(popupView, popupParams)
+        floatingManager.applySelectedIcon()
         floatingManager.hideFloatingIcon()
         animatePopupIn(popupView) {
             isTransitioning = false
@@ -113,6 +114,7 @@ class PopupManager(
         lp.y = floatingManager.params.y
 
         windowManager.addView(settingPopup, lp)
+        floatingManager.applySelectedIcon()
         floatingManager.hideFloatingIcon()
         animatePopupIn(settingPopup) {
             isTransitioning = false
@@ -231,6 +233,7 @@ class PopupManager(
         )
 
         windowManager.addView(favouritePopup, lp)
+        floatingManager.applySelectedIcon()
         floatingManager.hideFloatingIcon()
         animatePopupIn(favouritePopup) {
             isTransitioning = false
