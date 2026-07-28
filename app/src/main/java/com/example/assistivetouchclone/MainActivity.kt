@@ -49,12 +49,10 @@ class MainActivity : AppCompatActivity() {
 
 
         layoutTuyChinh.setOnClickListener {
-
             val intent = Intent(
                 this,
                 IconActivity::class.java
             )
-
             startActivity(intent)
         }
 

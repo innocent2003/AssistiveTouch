@@ -12,6 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.example.assistivetouchclone.MainActivity
+import com.example.assistivetouchclone.PopupIconSettingsActivity
 import com.example.assistivetouchclone.R
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
@@ -21,6 +22,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.Button
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 
@@ -108,59 +112,11 @@ class PopupManager(
     fun showSettingPopup() {
         if (isTransitioning) return
 
-        isTransitioning = true
         hideAllPopup(showFloatingIcon = false, animate = false)
-
-        settingPopup = LayoutInflater.from(service).inflate(R.layout.layout_setting_popup, null)
-
-        val lp = WindowManager.LayoutParams().apply {
-            copyFrom(floatingManager.params)
-            width = 500
-            height = WindowManager.LayoutParams.WRAP_CONTENT
-        }
-
-        lp.gravity = Gravity.TOP or Gravity.START
-        lp.x = floatingManager.params.x + 80
-        lp.y = floatingManager.params.y
-
-        windowManager.addView(settingPopup, lp)
-        floatingManager.applySelectedIcon()
-        floatingManager.hideFloatingIcon()
-        animatePopupIn(settingPopup) {
-            isTransitioning = false
-            isPopupShowing = true
-        }
-
-        val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
-        val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
-        val btnBluetooth = settingPopup!!.findViewById<LinearLayout>(R.id.btnBluetooth)
-        val btnRotate = settingPopup!!.findViewById<LinearLayout>(R.id.btnRotate)
-        val btnLocation = settingPopup!!.findViewById<LinearLayout>(R.id.btnLocation)
-        val btnVolumeUp = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeUp)
-        val btnVolumeDown = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeDown)
-        val btnSilent = settingPopup!!.findViewById<LinearLayout>(R.id.btnSilent)
-        val btnFlash = settingPopup!!.findViewById<LinearLayout>(R.id.btnFlash)
-
-        btnBack.setOnClickListener {
-            hideAllPopup()
-            showPopup()
-        }
-
-        btnWifi.setOnClickListener { SystemAction.openWifi(service) }
-        btnBluetooth.setOnClickListener { SystemAction.openBluetooth(service) }
-        btnRotate.setOnClickListener { SystemAction.openDisplay(service) }
-
-        btnLocation.setOnClickListener {
-            service.startActivity(
-                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-        }
-
-        btnVolumeUp.setOnClickListener { SystemAction.volumeUp(service) }
-        btnVolumeDown.setOnClickListener { SystemAction.volumeDown(service) }
-        btnSilent.setOnClickListener { SystemAction.toggleSilent(service) }
-        btnFlash.setOnClickListener { SystemAction.toggleFlash(service) }
+        service.startActivity(
+            Intent(service, PopupIconSettingsActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 
     fun lockScreen() {
@@ -250,7 +206,26 @@ class PopupManager(
             isPopupShowing = true
         }
 
-        populateFavouriteList()
+        // wire up RecyclerView grid and buttons
+        val rv = favouritePopup!!.findViewById<RecyclerView>(R.id.rvFavourite)
+        val btnAdd = favouritePopup!!.findViewById<Button>(R.id.btnAddApp)
+        val btnBack = favouritePopup!!.findViewById<Button>(R.id.btnBack)
+
+        populateFavouriteList(rv)
+
+        btnAdd.setOnClickListener {
+            // Open ProductListActivity so user can choose apps
+            service.startActivity(
+                Intent(service, com.example.assistivetouchclone.ProductListActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            hideAllPopup()
+        }
+
+        btnBack.setOnClickListener {
+            hideAllPopup()
+            showPopup()
+        }
     }
 
     private fun animatePopupIn(view: View?, onComplete: (() -> Unit)? = null) {
@@ -297,78 +272,63 @@ class PopupManager(
             .start()
     }
 
-    private fun populateFavouriteList() {
-        val root = favouritePopup ?: return
-
-        // Try to find a container in the layout by name; fallback to root if not present
-        val resId = service.resources.getIdentifier("fav_container", "id", service.packageName)
-        val container = if (resId != 0) root.findViewById<ViewGroup>(resId) else (root as? ViewGroup)
+    private fun populateFavouriteList(rv: RecyclerView?) {
+        val recycler = rv ?: return
 
         val pm = service.packageManager
         val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
         val apps = pm.queryIntentActivities(intent, 0)
 
-        val parent = container as? ViewGroup ?: return
-        parent.removeAllViews()
+        recycler.layoutManager = GridLayoutManager(service, 4)
+        recycler.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        val itemPadding = (8 * service.resources.displayMetrics.density).toInt()
-
-        apps.forEach { ri: ResolveInfo ->
-            val label = ri.loadLabel(pm).toString()
-            val icon = ri.loadIcon(pm)
-            val pkg = ri.activityInfo.packageName
-
-            val appInfo = AppInfo(label, pkg, icon)
-
-            val item = LinearLayout(service).apply {
-                orientation = LinearLayout.HORIZONTAL
-                setPadding(itemPadding, itemPadding, itemPadding, itemPadding)
-                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                isClickable = true
-                isFocusable = true
+            inner class VH(view: View) : RecyclerView.ViewHolder(view) {
+                val icon: ImageView = view.findViewById(R.id.appIcon)
+                val name: TextView = view.findViewById(R.id.appName)
             }
 
-            val iv = ImageView(service).apply {
-                setImageDrawable(icon)
-                val size = (40 * service.resources.displayMetrics.density).toInt()
-                layoutParams = LinearLayout.LayoutParams(size, size)
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val v = LayoutInflater.from(service).inflate(R.layout.item_app, parent, false)
+                return VH(v)
             }
 
-            val tv = TextView(service).apply {
-                text = label
-                setPadding(itemPadding, 0, 0, 0)
-                layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            }
+            override fun getItemCount(): Int = apps.size
 
-            item.addView(iv)
-            item.addView(tv)
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val ri = apps[position]
+                val pmLabel = ri.loadLabel(pm).toString()
+                val pmIcon = ri.loadIcon(pm)
+                val pkg = ri.activityInfo.packageName
 
-            item.setOnClickListener {
-                // Launch the selected app
-                val launch = Intent(Intent.ACTION_MAIN).apply {
-                    addCategory(Intent.CATEGORY_LAUNCHER)
-                    component = android.content.ComponentName(pkg, ri.activityInfo.name)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                val vh = holder as VH
+                vh.icon.setImageDrawable(pmIcon)
+                vh.name.text = pmLabel
+
+                vh.itemView.setOnClickListener {
+                    // Launch chosen app
+                    val launch = Intent(Intent.ACTION_MAIN).apply {
+                        addCategory(Intent.CATEGORY_LAUNCHER)
+                        component = android.content.ComponentName(pkg, ri.activityInfo.name)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    try {
+                        service.startActivity(launch)
+                    } catch (t: Throwable) {
+                        val pmLaunch = service.packageManager.getLaunchIntentForPackage(pkg)
+                        pmLaunch?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        pmLaunch?.let { service.startActivity(it) }
+                    }
+                    hideAllPopup()
                 }
-                try {
-                    service.startActivity(launch)
-                } catch (t: Throwable) {
-                    // fallback: try package launch intent
-                    val pmLaunch = service.packageManager.getLaunchIntentForPackage(pkg)
-                    pmLaunch?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    pmLaunch?.let { service.startActivity(it) }
+
+                vh.itemView.setOnLongClickListener {
+                    val appInfo = AppInfo(pmLabel, pkg, pmIcon)
+                    ShortcutUtils.createPinnedShortcut(service, appInfo)
+                    hideAllPopup()
+                    true
                 }
-                hideAllPopup()
             }
-
-            item.setOnLongClickListener {
-                // Long-press to create a pinned shortcut
-                ShortcutUtils.createPinnedShortcut(service, appInfo)
-                hideAllPopup()
-                true
-            }
-
-            parent.addView(item)
         }
+
     }
 }
