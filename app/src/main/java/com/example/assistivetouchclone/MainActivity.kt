@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtStatus: TextView
 
     private lateinit var btnStart: Button
+    private lateinit var cardMenu4: MaterialCardView
+    private var ignoreSwitchCallback = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +43,9 @@ class MainActivity : AppCompatActivity() {
         switchAssistive = findViewById(R.id.switchAssistive)
         cardAssistive = findViewById(R.id.cardAssistive)
         txtStatus = findViewById(R.id.txtStatus)
+        cardMenu4 = findViewById(R.id.cardMenu4)
         val layoutTuyChinh = findViewById<LinearLayout>(R.id.layoutTuyChinh)
+        val layoutCaiDat = findViewById<LinearLayout>(R.id.layoutCaiDat)
 
 
         layoutTuyChinh.setOnClickListener {
@@ -53,6 +57,17 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        layoutCaiDat.setOnClickListener {
+            startActivity(Intent(this, ProductListActivity::class.java))
+        }
+
+        cardMenu4.setOnClickListener {
+            startActivity(Intent(this, ProductListActivity::class.java))
+        }
+
+        initializeSwitchState()
+
         btnStart.setOnClickListener {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -82,6 +97,7 @@ class MainActivity : AppCompatActivity() {
                 startService(serviceIntent)
         }
         switchAssistive.setOnCheckedChangeListener { _, isChecked ->
+            if (ignoreSwitchCallback) return@setOnCheckedChangeListener
 
             updateUI(isChecked)
 
@@ -149,6 +165,14 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun initializeSwitchState() {
+        ignoreSwitchCallback = true
+        val isFloatingRunning = FloatingService.isRunning
+        switchAssistive.isChecked = isFloatingRunning
+        updateUI(isFloatingRunning)
+        ignoreSwitchCallback = false
     }
 
     private fun updateUI(enable: Boolean) {

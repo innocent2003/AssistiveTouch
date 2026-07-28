@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
@@ -64,6 +65,7 @@ class PopupManager(
         val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
         val btnLock = popupView!!.findViewById<LinearLayout>(R.id.btnLock)
         val btnFavourite = popupView!!.findViewById<LinearLayout>(R.id.btnFavourite)
+        val btnScreen = popupView!!.findViewById<LinearLayout>(R.id.btnScreen)
 
         btnHome.setOnClickListener {
             goHome()
@@ -79,6 +81,14 @@ class PopupManager(
 
         btnFavourite.setOnClickListener {
             showFavouritePopup()
+        }
+
+        btnScreen.setOnClickListener {
+            service.startActivity(
+                Intent(service, MainActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            hidePopup()
         }
     }
 
