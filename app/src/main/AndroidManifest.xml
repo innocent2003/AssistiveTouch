@@ -22,6 +22,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".MenuActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ProductListActivity"
             android:exported="false" />
 

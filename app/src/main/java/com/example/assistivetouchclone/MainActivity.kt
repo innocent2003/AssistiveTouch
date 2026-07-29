@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         cardAssistive = findViewById(R.id.cardAssistive)
         txtStatus = findViewById(R.id.txtStatus)
         cardMenu4 = findViewById(R.id.cardMenu4)
+        val layoutTuyChinh1 = findViewById<LinearLayout>(R.id.layoutTuyChinh1)
         val layoutTuyChinh = findViewById<LinearLayout>(R.id.layoutTuyChinh)
         val layoutCaiDat = findViewById<LinearLayout>(R.id.layoutCaiDat)
 
@@ -53,6 +54,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(
                 this,
                 IconActivity::class.java
+            )
+
+            startActivity(intent)
+        }
+
+        layoutTuyChinh1.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                MenuActivity::class.java
             )
 
             startActivity(intent)
