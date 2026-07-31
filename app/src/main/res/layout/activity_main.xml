@@ -147,13 +147,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="Tùy chỉnh"
+                            android:text="@string/card_customize"
                             android:textSize="18sp" />
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
-
 
                 <Space
                     android:layout_width="match_parent"
@@ -189,17 +188,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="Biểu tượng"
+                            android:text="@string/card_icons"
                             android:textSize="18sp" />
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
-
 
         <!-- ========================= -->
         <!-- HÀNG 2 -->
@@ -240,7 +238,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
-                        android:text="Trình dọn dẹp cài đặt"
+                        android:text="@string/card_cleaner"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -282,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
-                        android:text="Cài đặt"
+                        android:text="@string/card_settings"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -301,7 +299,7 @@
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:layout_marginBottom="20dp"
-        android:text="Start Floating Button"
+        android:text="@string/start_floating_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -7,6 +7,10 @@
     <string name="language_arabic">العربية</string>
     <string name="language_german">Deutsch</string>
     <string name="language_finnish">suomi</string>
+    <string name="language_indonesian">Indonesia</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_malay">Bahasa Melayu</string>
+    <string name="language_tagalog">Tagalog</string>
     <string name="button_continue">Tiếp tục</string>
     <string name="title_assistive_touch">Assistive Touch</string>
     <string name="assistive_touch">Assistive\nTouch</string>

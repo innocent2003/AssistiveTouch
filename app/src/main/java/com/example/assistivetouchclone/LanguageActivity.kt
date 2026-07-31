@@ -15,10 +15,6 @@ class LanguageActivity : BaseActivity() {
         setContentView(R.layout.activity_language)
 
         val preferences = getSharedPreferences("AssistiveSettings", MODE_PRIVATE)
-        if (preferences.contains("selected_language")) {
-            launchMainActivity()
-            return
-        }
 
         languageGroup = findViewById(R.id.languageRadioGroup)
         val continueButton = findViewById<Button>(R.id.btnContinue)
@@ -30,6 +26,10 @@ class LanguageActivity : BaseActivity() {
                 R.id.radioArabic -> "ar"
                 R.id.radioGerman -> "de"
                 R.id.radioFinnish -> "fi"
+                R.id.radioIndonesian -> "id"
+                R.id.radioPortuguese -> "pt"
+                R.id.radioMalay -> "ms"
+                R.id.radioTagalog -> "tl"
                 else -> "default"
             }
 

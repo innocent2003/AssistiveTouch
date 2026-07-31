@@ -85,32 +85,7 @@ class MainActivity : BaseActivity() {
         initializeSwitchState()
 
         btnStart.setOnClickListener {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                if (!Settings.canDrawOverlays(this)) {
-
-                    startActivity(
-                        Intent(
-                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            Uri.parse("package:$packageName")
-                        )
-                    )
-
-                    return@setOnClickListener
-                }
-            }
-
-            // Xin quyền Device Admin
-            requestDeviceAdmin()
-            requestCameraPermission()
-
-            val serviceIntent = Intent(this, FloatingService::class.java)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                startForegroundService(serviceIntent)
-            else
-                startService(serviceIntent)
+            startActivity(Intent(this, LanguageActivity::class.java))
         }
         switchAssistive.setOnCheckedChangeListener { _, isChecked ->
             if (ignoreSwitchCallback) return@setOnCheckedChangeListener
@@ -197,17 +172,17 @@ class MainActivity : BaseActivity() {
 
             cardAssistive.setCardBackgroundColor(Color.parseColor("#4285F4"))
 
-            txtStatus.text = "Đã bật"
+            txtStatus.text = getString(R.string.status_on)
 
-            btnStart.text = "Start Floating Button"
+            btnStart.text = getString(R.string.start_floating_button)
 
         } else {
 
             cardAssistive.setCardBackgroundColor(Color.parseColor("#9E9E9E"))
 
-            txtStatus.text = "Đã tắt"
+            txtStatus.text = getString(R.string.status_off)
 
-            btnStart.text = "Stop Floating Button"
+            btnStart.text = getString(R.string.stop_floating_button)
         }
 
     }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import com.example.assistivetouchclone.LocaleHelper
 import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
 import com.example.assistivetouchclone.utils.SystemAction
@@ -37,6 +38,11 @@ class PopupManager(
     var isPopupShowing = false
     private var isTransitioning = false
 
+    private fun getLocalizedServiceContext() = LocaleHelper.setLocale(
+        service,
+        LocaleHelper.getPersistedLanguage(service)
+    )
+
     fun showPopup() {
         if (isTransitioning || isPopupShowing) return
 
@@ -44,7 +50,8 @@ class PopupManager(
         hideAllPopup(showFloatingIcon = false, animate = false)
         showDimView()
 
-        popupView = LayoutInflater.from(service).inflate(R.layout.layout_popup, null)
+        val localizedContext = getLocalizedServiceContext()
+        popupView = LayoutInflater.from(localizedContext).inflate(R.layout.layout_popup, null)
 
         val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
@@ -109,7 +116,8 @@ class PopupManager(
         isTransitioning = true
         hideAllPopup(showFloatingIcon = false, animate = false)
 
-        settingPopup = LayoutInflater.from(service).inflate(R.layout.layout_setting_popup, null)
+        val localizedContext = getLocalizedServiceContext()
+        settingPopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_setting_popup, null)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             500,
@@ -226,7 +234,8 @@ class PopupManager(
         hideAllPopup(showFloatingIcon = false, animate = false)
         showDimView()
 
-        favouritePopup = LayoutInflater.from(service).inflate(R.layout.layout_favourite_popup, null)
+        val localizedContext = getLocalizedServiceContext()
+        favouritePopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_favourite_popup, null)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
