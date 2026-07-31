@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Khóa"
+                android:text="@string/popup_lock"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Chính"
+                android:text="@string/popup_home"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Yêu&#10;thích"
+                android:text="@string/popup_favourite"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -137,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Màn&#10;hình"
+                android:text="@string/popup_screen"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Cài đặt"
+                android:text="@string/popup_settings"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>

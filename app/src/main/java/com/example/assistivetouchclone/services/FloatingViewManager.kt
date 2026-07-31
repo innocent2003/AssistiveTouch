@@ -2,10 +2,13 @@ package com.example.assistivetouchclone.services
 
 import android.animation.ValueAnimator
 import android.app.Service
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import com.example.assistivetouchclone.R
 
@@ -23,15 +26,21 @@ class FloatingViewManager(
     private var initialTouchX = 0f
     private var initialTouchY = 0f
     private var isDragging = false
+    private lateinit var preferences: SharedPreferences
+    private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "selected_icon") {
+            applySelectedIcon()
+        }
+    }
 
     fun init() {
         floatingView = LayoutInflater.from(service)
             .inflate(R.layout.layout_floating, null)
 
-        val imgFloatingIcon = floatingView.findViewById<ImageView>(R.id.imgFloat)
-        val preferences = service.getSharedPreferences("AssistiveSettings", Service.MODE_PRIVATE)
-        val selectedIcon = preferences.getInt("selected_icon", R.drawable.mood_bad_24px)
-        imgFloatingIcon.setImageResource(selectedIcon)
+        preferences = service.getSharedPreferences("AssistiveSettings", Service.MODE_PRIVATE)
+        preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
+
+        applySelectedIcon()
 
         params = OverlayUtils.createOverlayLayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -49,8 +58,49 @@ class FloatingViewManager(
         }
     }
 
+    fun applySelectedIcon() {
+        if (!::floatingView.isInitialized) return
+
+        val imgFloatingIcon = floatingView.findViewById<ImageView>(R.id.imgFloat)
+        val selectedIcon = preferences.getInt("selected_icon", R.drawable.mood_bad_24px)
+        imgFloatingIcon.setImageResource(selectedIcon)
+    }
+
+    fun hideFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+
+        floatingView.animate().cancel()
+        floatingView.animate()
+            .alpha(0f)
+            .scaleX(0.88f)
+            .scaleY(0.88f)
+            .setDuration(140)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction { floatingView.visibility = View.INVISIBLE }
+            .start()
+    }
+
+    fun showFloatingIcon() {
+        if (!::floatingView.isInitialized) return
+
+        floatingView.visibility = View.VISIBLE
+        floatingView.alpha = 0f
+        floatingView.scaleX = 0.88f
+        floatingView.scaleY = 0.88f
+
+        floatingView.animate().cancel()
+        floatingView.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(180)
+            .setInterpolator(OvershootInterpolator(0.95f))
+            .start()
+    }
+
     fun destroy() {
         if (::floatingView.isInitialized) {
+            preferences.unregisterOnSharedPreferenceChangeListener(preferenceListener)
             OverlayUtils.removeViewIfAttached(windowManager, floatingView)
         }
     }

@@ -20,10 +20,13 @@ class FloatingService : Service() {
     companion object {
         private const val CHANNEL_ID = "floating_channel"
         private const val CHANNEL_NAME = "Floating Button"
+        var isRunning = false
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
 
         createNotification()
 
@@ -43,6 +46,7 @@ class FloatingService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isRunning = false
         floatingManager.destroy()
         popupManager.hideAllPopup()
     }

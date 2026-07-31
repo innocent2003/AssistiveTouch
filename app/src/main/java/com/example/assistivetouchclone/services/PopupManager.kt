@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import com.example.assistivetouchclone.LocaleHelper
+import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
@@ -20,6 +22,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.OvershootInterpolator
 
 class PopupManager(
     private val service: Service,
@@ -32,27 +36,41 @@ class PopupManager(
     private var dimView: View? = null
 
     var isPopupShowing = false
+    private var isTransitioning = false
+
+    private fun getLocalizedServiceContext() = LocaleHelper.setLocale(
+        service,
+        LocaleHelper.getPersistedLanguage(service)
+    )
 
     fun showPopup() {
-        hideAllPopup()
+        if (isTransitioning || isPopupShowing) return
+
+        isTransitioning = true
+        hideAllPopup(showFloatingIcon = false, animate = false)
         showDimView()
 
-        popupView = LayoutInflater.from(service).inflate(R.layout.layout_popup, null)
+        val localizedContext = getLocalizedServiceContext()
+        popupView = LayoutInflater.from(localizedContext).inflate(R.layout.layout_popup, null)
 
-        val popupParams = OverlayUtils.createOverlayLayoutParams(
+        val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            floatingManager.params.x + 80,
-            floatingManager.params.y
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
 
         windowManager.addView(popupView, popupParams)
-        isPopupShowing = true
+        floatingManager.applySelectedIcon()
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(popupView) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         val btnHome = popupView!!.findViewById<LinearLayout>(R.id.btnHome)
         val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
         val btnLock = popupView!!.findViewById<LinearLayout>(R.id.btnLock)
         val btnFavourite = popupView!!.findViewById<LinearLayout>(R.id.btnFavourite)
+        val btnScreen = popupView!!.findViewById<LinearLayout>(R.id.btnScreen)
 
         btnHome.setOnClickListener {
             goHome()
@@ -69,30 +87,50 @@ class PopupManager(
         btnFavourite.setOnClickListener {
             showFavouritePopup()
         }
+
+        btnScreen.setOnClickListener {
+            service.startActivity(
+                Intent(service, MainActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            hidePopup()
+        }
     }
 
     fun hidePopup() {
-        OverlayUtils.removeViewIfAttached(windowManager, popupView)
+        if (isTransitioning) return
+
+        val viewToClose = popupView
         popupView = null
+        isTransitioning = true
         isPopupShowing = false
+        animatePopupOut(viewToClose) {
+            isTransitioning = false
+            floatingManager.showFloatingIcon()
+        }
     }
 
     fun showSettingPopup() {
-        hidePopup()
+        if (isTransitioning) return
 
-        settingPopup = LayoutInflater.from(service).inflate(R.layout.layout_setting_popup, null)
+        isTransitioning = true
+        hideAllPopup(showFloatingIcon = false, animate = false)
 
-        val lp = WindowManager.LayoutParams().apply {
-            copyFrom(floatingManager.params)
-            width = 500
-            height = WindowManager.LayoutParams.WRAP_CONTENT
-        }
+        val localizedContext = getLocalizedServiceContext()
+        settingPopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_setting_popup, null)
 
-        lp.gravity = Gravity.TOP or Gravity.START
-        lp.x = floatingManager.params.x + 80
-        lp.y = floatingManager.params.y
+        val lp = OverlayUtils.createCenteredOverlayLayoutParams(
+            500,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
         windowManager.addView(settingPopup, lp)
+        floatingManager.applySelectedIcon()
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(settingPopup) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
         val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
@@ -159,39 +197,104 @@ class PopupManager(
         windowManager.addView(dimView, lp)
     }
 
-    fun hideAllPopup() {
-        OverlayUtils.removeViewIfAttached(windowManager, popupView)
+    fun hideAllPopup(showFloatingIcon: Boolean = true, animate: Boolean = true) {
+        val currentPopup = popupView
+        val currentSettingPopup = settingPopup
+        val currentFavouritePopup = favouritePopup
+        val currentDimView = dimView
+
         popupView = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, settingPopup)
         settingPopup = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, favouritePopup)
         favouritePopup = null
-
-        OverlayUtils.removeViewIfAttached(windowManager, dimView)
         dimView = null
-
         isPopupShowing = false
+
+        if (animate) {
+            listOf(currentPopup, currentSettingPopup, currentFavouritePopup).forEach { view ->
+                if (view != null) animatePopupOut(view) { OverlayUtils.removeViewIfAttached(windowManager, view) }
+            }
+        } else {
+            listOf(currentPopup, currentSettingPopup, currentFavouritePopup).forEach { view ->
+                OverlayUtils.removeViewIfAttached(windowManager, view)
+            }
+        }
+
+        OverlayUtils.removeViewIfAttached(windowManager, currentDimView)
+
+        if (showFloatingIcon) {
+            floatingManager.showFloatingIcon()
+        }
+        isTransitioning = false
     }
 
     fun showFavouritePopup() {
-        hideAllPopup()
+        if (isTransitioning) return
+
+        isTransitioning = true
+        hideAllPopup(showFloatingIcon = false, animate = false)
         showDimView()
 
-        favouritePopup = LayoutInflater.from(service).inflate(R.layout.layout_favourite_popup, null)
+        val localizedContext = getLocalizedServiceContext()
+        favouritePopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_favourite_popup, null)
 
-        val lp = OverlayUtils.createOverlayLayoutParams(
+        val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            floatingManager.params.x + 80,
-            floatingManager.params.y
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
 
         windowManager.addView(favouritePopup, lp)
-        isPopupShowing = true
+        floatingManager.applySelectedIcon()
+        floatingManager.hideFloatingIcon()
+        animatePopupIn(favouritePopup) {
+            isTransitioning = false
+            isPopupShowing = true
+        }
 
         populateFavouriteList()
+    }
+
+    private fun animatePopupIn(view: View?, onComplete: (() -> Unit)? = null) {
+        if (view == null) {
+            onComplete?.invoke()
+            return
+        }
+
+        view.alpha = 0f
+        view.scaleX = 0.9f
+        view.scaleY = 0.9f
+        view.translationY = 24f
+
+        view.animate().cancel()
+        view.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .translationY(0f)
+            .setDuration(220)
+            .setInterpolator(OvershootInterpolator(0.95f))
+            .withEndAction { onComplete?.invoke() }
+            .start()
+    }
+
+    private fun animatePopupOut(view: View?, onComplete: (() -> Unit)? = null) {
+        if (view == null) {
+            onComplete?.invoke()
+            return
+        }
+
+        view.animate().cancel()
+        view.animate()
+            .alpha(0f)
+            .scaleX(0.94f)
+            .scaleY(0.94f)
+            .translationY(16f)
+            .setDuration(180)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction {
+                OverlayUtils.removeViewIfAttached(windowManager, view)
+                onComplete?.invoke()
+            }
+            .start()
     }
 
     private fun populateFavouriteList() {

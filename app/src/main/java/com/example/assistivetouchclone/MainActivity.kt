@@ -19,21 +19,28 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.example.assistivetouchclone.services.FloatingService
 import com.example.assistivetouchclone.services.MyAdminReceiver
 import com.google.android.material.card.MaterialCardView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private val CAMERA_REQUEST = 100
     private lateinit var switchAssistive: Switch
     private lateinit var cardAssistive: MaterialCardView
     private lateinit var txtStatus: TextView
 
     private lateinit var btnStart: Button
+    private lateinit var cardMenu4: MaterialCardView
+    private var ignoreSwitchCallback = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!isLanguageSelected()) {
+            startActivity(Intent(this, LanguageActivity::class.java))
+            finish()
+            return
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -41,7 +48,10 @@ class MainActivity : AppCompatActivity() {
         switchAssistive = findViewById(R.id.switchAssistive)
         cardAssistive = findViewById(R.id.cardAssistive)
         txtStatus = findViewById(R.id.txtStatus)
+        cardMenu4 = findViewById(R.id.cardMenu4)
+        val layoutTuyChinh1 = findViewById<LinearLayout>(R.id.layoutTuyChinh1)
         val layoutTuyChinh = findViewById<LinearLayout>(R.id.layoutTuyChinh)
+        val layoutCaiDat = findViewById<LinearLayout>(R.id.layoutCaiDat)
 
 
         layoutTuyChinh.setOnClickListener {
@@ -53,35 +63,32 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        layoutTuyChinh1.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                MenuActivity::class.java
+            )
+
+            startActivity(intent)
+        }
+
+        layoutCaiDat.setOnClickListener {
+            startActivity(Intent(this, ProductListActivity::class.java))
+        }
+
+        cardMenu4.setOnClickListener {
+            startActivity(Intent(this, ProductListActivity::class.java))
+        }
+
+        initializeSwitchState()
+
         btnStart.setOnClickListener {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                if (!Settings.canDrawOverlays(this)) {
-
-                    startActivity(
-                        Intent(
-                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            Uri.parse("package:$packageName")
-                        )
-                    )
-
-                    return@setOnClickListener
-                }
-            }
-
-            // Xin quyền Device Admin
-            requestDeviceAdmin()
-            requestCameraPermission()
-
-            val serviceIntent = Intent(this, FloatingService::class.java)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                startForegroundService(serviceIntent)
-            else
-                startService(serviceIntent)
+            startActivity(Intent(this, LanguageActivity::class.java))
         }
         switchAssistive.setOnCheckedChangeListener { _, isChecked ->
+            if (ignoreSwitchCallback) return@setOnCheckedChangeListener
 
             updateUI(isChecked)
 
@@ -151,25 +158,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initializeSwitchState() {
+        ignoreSwitchCallback = true
+        val isFloatingRunning = FloatingService.isRunning
+        switchAssistive.isChecked = isFloatingRunning
+        updateUI(isFloatingRunning)
+        ignoreSwitchCallback = false
+    }
+
     private fun updateUI(enable: Boolean) {
 
         if (enable) {
 
             cardAssistive.setCardBackgroundColor(Color.parseColor("#4285F4"))
 
-            txtStatus.text = "Đã bật"
+            txtStatus.text = getString(R.string.status_on)
 
-            btnStart.text = "Start Floating Button"
+            btnStart.text = getString(R.string.start_floating_button)
 
         } else {
 
             cardAssistive.setCardBackgroundColor(Color.parseColor("#9E9E9E"))
 
-            txtStatus.text = "Đã tắt"
+            txtStatus.text = getString(R.string.status_off)
 
-            btnStart.text = "Stop Floating Button"
+            btnStart.text = getString(R.string.stop_floating_button)
         }
 
+    }
+
+    private fun isLanguageSelected(): Boolean {
+        val preferences = getSharedPreferences("AssistiveSettings", MODE_PRIVATE)
+        return preferences.contains("selected_language")
     }
 
 
