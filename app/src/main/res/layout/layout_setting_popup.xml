@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Wifi"
+                android:text="@string/popup_wifi"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"/>
         </LinearLayout>
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Bluetooth"
+                android:text="@string/popup_bluetooth"
                 android:textColor="@android:color/white"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
@@ -85,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Khóa&#10;xoay"
+                android:text="@string/popup_rotate_lock"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Vị trí"
+                android:text="@string/popup_location"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Tăng âm&#10;lượng"
+                android:text="@string/popup_volume_up"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Bình&#10;thường"
+                android:text="@string/popup_normal"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
@@ -216,7 +216,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Đèn pin"
+                android:text="@string/popup_flash"
                 android:textColor="@android:color/white"
                 android:textAlignment="center"
                 android:textSize="15sp"/>
@@ -240,7 +240,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Giảm âm&#10;lượng"
+                android:text="@string/popup_volume_down"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>

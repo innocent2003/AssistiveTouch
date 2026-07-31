@@ -12,7 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class ProductListActivity : AppCompatActivity() {
+class ProductListActivity : BaseActivity() {
 
     private lateinit var appGridView: GridView
 

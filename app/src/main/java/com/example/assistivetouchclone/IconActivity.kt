@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
-class IconActivity : AppCompatActivity() {
+class IconActivity : BaseActivity() {
 
     private lateinit var icon1: ImageView
     private lateinit var icon2: ImageView

@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Favourite Apps"
+        android:text="@string/favourite_apps"
         android:textStyle="bold"
         android:textSize="18sp"
         android:gravity="center"
@@ -32,14 +32,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Add App"/>
+            android:text="@string/add_app"/>
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Back"/>
+            android:text="@string/back"/>
     </LinearLayout>
 
 </LinearLayout>

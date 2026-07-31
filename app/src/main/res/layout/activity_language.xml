@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FAFAFA">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/language_choose"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+    <RadioGroup
+        android:id="@+id/languageRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radioDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_default"
+            android:checked="true"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioVietnamese"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_vietnamese"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioEnglish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_english"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioArabic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_arabic"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioGerman"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_german"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/radioFinnish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/language_finnish"
+            android:padding="12dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_continue"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>

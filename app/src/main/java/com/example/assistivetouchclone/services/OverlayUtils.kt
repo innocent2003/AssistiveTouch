@@ -30,6 +30,27 @@ object OverlayUtils {
         }
     }
 
+    fun createCenteredOverlayLayoutParams(
+        width: Int,
+        height: Int,
+        flags: Int = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+    ): WindowManager.LayoutParams {
+        return WindowManager.LayoutParams(
+            width,
+            height,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                WindowManager.LayoutParams.TYPE_PHONE,
+            flags,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.CENTER
+            x = 0
+            y = 0
+        }
+    }
+
     fun removeViewIfAttached(windowManager: WindowManager, view: View?) {
         view?.let {
             if (it.parent != null) windowManager.removeView(it)

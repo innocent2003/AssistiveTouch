@@ -41,6 +41,26 @@
     <string name="toast_lock_device">Lock (device lock)</string>
     <string name="toast_screen_action">Screen action</string>
     <string name="toast_power">Power</string>
-    <string name="toast_device_admin_enabled">Device Admin Enabled</string>
-    <string name="toast_device_admin_disabled">Device Admin Disabled</string>
+    <string-array name="menu_page_0_labels">
+        <item></item>
+        <item>Lock</item>
+        <item></item>
+        <item>Favourite</item>
+        <item>Home</item>
+        <item>Settings</item>
+        <item></item>
+        <item>Screen</item>
+        <item>Power</item>
+    </string-array>
+    <string-array name="menu_page_1_labels">
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+        <item>+</item>
+    </string-array>
 </resources>

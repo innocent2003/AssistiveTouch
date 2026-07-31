@@ -19,12 +19,11 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.example.assistivetouchclone.services.FloatingService
 import com.example.assistivetouchclone.services.MyAdminReceiver
 import com.google.android.material.card.MaterialCardView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private val CAMERA_REQUEST = 100
     private lateinit var switchAssistive: Switch
     private lateinit var cardAssistive: MaterialCardView
@@ -36,6 +35,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!isLanguageSelected()) {
+            startActivity(Intent(this, LanguageActivity::class.java))
+            finish()
+            return
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -205,6 +210,11 @@ class MainActivity : AppCompatActivity() {
             btnStart.text = "Stop Floating Button"
         }
 
+    }
+
+    private fun isLanguageSelected(): Boolean {
+        val preferences = getSharedPreferences("AssistiveSettings", MODE_PRIVATE)
+        return preferences.contains("selected_language")
     }
 
 

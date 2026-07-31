@@ -46,11 +46,9 @@ class PopupManager(
 
         popupView = LayoutInflater.from(service).inflate(R.layout.layout_popup, null)
 
-        val popupParams = OverlayUtils.createOverlayLayoutParams(
+        val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            floatingManager.params.x + 80,
-            floatingManager.params.y
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
 
         windowManager.addView(popupView, popupParams)
@@ -113,15 +111,10 @@ class PopupManager(
 
         settingPopup = LayoutInflater.from(service).inflate(R.layout.layout_setting_popup, null)
 
-        val lp = WindowManager.LayoutParams().apply {
-            copyFrom(floatingManager.params)
-            width = 500
-            height = WindowManager.LayoutParams.WRAP_CONTENT
-        }
-
-        lp.gravity = Gravity.TOP or Gravity.START
-        lp.x = floatingManager.params.x + 80
-        lp.y = floatingManager.params.y
+        val lp = OverlayUtils.createCenteredOverlayLayoutParams(
+            500,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
         windowManager.addView(settingPopup, lp)
         floatingManager.applySelectedIcon()
@@ -235,11 +228,9 @@ class PopupManager(
 
         favouritePopup = LayoutInflater.from(service).inflate(R.layout.layout_favourite_popup, null)
 
-        val lp = OverlayUtils.createOverlayLayoutParams(
+        val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            floatingManager.params.x + 80,
-            floatingManager.params.y
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
 
         windowManager.addView(favouritePopup, lp)
