@@ -7,39 +7,20 @@
     android:background="@drawable/bg_popup"
     android:padding="12dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/favourite_apps"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:paddingBottom="12dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFavourite"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/favourite_apps"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textSize="18sp"-->
+<!--        android:gravity="center"-->
+<!--        android:paddingBottom="12dp"/>-->
 
     <LinearLayout
+        android:id="@+id/favoriteContentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnAddApp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/add_app"/>
-
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/back"/>
-    </LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"/>
 
 </LinearLayout>

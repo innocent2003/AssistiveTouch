@@ -3,14 +3,21 @@ package com.example.assistivetouchclone.services
 import android.app.Service
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import com.example.assistivetouchclone.LocaleHelper
 import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
@@ -18,8 +25,6 @@ import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
 import com.example.assistivetouchclone.utils.ShortcutUtils
 import android.content.pm.ResolveInfo
-import android.widget.ImageView
-import android.widget.TextView
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.AccelerateInterpolator
@@ -34,6 +39,10 @@ class PopupManager(
     private var settingPopup: View? = null
     private var popupView: View? = null
     private var dimView: View? = null
+
+    private val favouritePrefs by lazy {
+        service.getSharedPreferences("AssistiveSettings", Context.MODE_PRIVATE)
+    }
 
     var isPopupShowing = false
     private var isTransitioning = false
@@ -254,6 +263,192 @@ class PopupManager(
         populateFavouriteList()
     }
 
+    private fun createFavouriteSlotView(index: Int, appInfo: AppInfo?): View {
+        val item = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(8, 8, 8, 8)
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = (96 * service.resources.displayMetrics.density).toInt()
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+            setBackgroundResource(android.R.color.transparent)
+            isClickable = true
+            isFocusable = true
+        }
+
+        val icon = ImageView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                (40 * service.resources.displayMetrics.density).toInt(),
+                (40 * service.resources.displayMetrics.density).toInt()
+            )
+            setImageDrawable(appInfo?.icon ?: service.getDrawable(android.R.drawable.ic_menu_add))
+            alpha = if (appInfo == null) 0.7f else 1f
+        }
+
+        val label = TextView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            setPadding(0, 8, 0, 0)
+            text = appInfo?.appName ?: ""
+            textSize = 13f
+            gravity = Gravity.CENTER
+            maxLines = 2
+            ellipsize = android.text.TextUtils.TruncateAt.END
+            alpha = if (appInfo == null) 0.7f else 1f
+        }
+
+        item.addView(icon)
+        item.addView(label)
+
+        item.setOnClickListener {
+            showAppPicker(index)
+        }
+
+        item.setOnLongClickListener {
+            saveFavouriteApp(index, null)
+            icon.setImageResource(android.R.drawable.ic_menu_add)
+            label.text = "Nothing set"
+            icon.alpha = 0.7f
+            label.alpha = 0.7f
+            applySelectedState(item, false)
+            true
+        }
+
+        return item
+    }
+
+    private fun applySelectedState(view: View, isSelected: Boolean) {
+        view.isSelected = isSelected
+        view.setBackgroundColor(if (isSelected) Color.parseColor("#33A5D6A7") else Color.TRANSPARENT)
+        view.alpha = if (isSelected) 1f else 0.9f
+        if (!isSelected) {
+            view.background = null
+        }
+    }
+
+    private fun createAppPickerItem(appInfo: AppInfo, slotIndex: Int): View {
+        val item = LinearLayout(service).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(12, 12, 12, 12)
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            isClickable = true
+            isFocusable = true
+        }
+
+        val icon = ImageView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                (36 * service.resources.displayMetrics.density).toInt(),
+                (36 * service.resources.displayMetrics.density).toInt()
+            )
+            setImageDrawable(appInfo.icon)
+        }
+
+        val label = TextView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            setPadding(12, 0, 0, 0)
+            text = appInfo.appName
+            textSize = 15f
+            setTextColor(android.graphics.Color.WHITE)
+        }
+
+        item.addView(icon)
+        item.addView(label)
+
+        item.setOnLongClickListener {
+            applySelectedState(item, true)
+            saveFavouriteApp(slotIndex, appInfo.packageName)
+            true
+        }
+
+        item.setOnClickListener {
+            applySelectedState(item, true)
+            saveFavouriteApp(slotIndex, appInfo.packageName)
+            launchApp(appInfo.packageName)
+            hideAllPopup()
+        }
+
+        return item
+    }
+
+    private fun showAppPicker(slotIndex: Int) {
+        val root = favouritePopup ?: return
+        val container = root.findViewById<LinearLayout>(R.id.favoriteContentContainer) ?: return
+        container.removeAllViews()
+
+        val title = TextView(service).apply {
+            text = "Choose app"
+            textSize = 16f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(0, 0, 0, 8)
+        }
+
+        val backButton = Button(service).apply {
+            text = "Back"
+            setOnClickListener { populateFavouriteList() }
+        }
+
+        val scrollView = ScrollView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f)
+        }
+
+        val appList = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+
+        val pm = service.packageManager
+        val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
+        val apps = pm.queryIntentActivities(intent, 0)
+            .sortedBy { it.loadLabel(pm).toString().lowercase() }
+
+        apps.forEach { resolveInfo ->
+            val label = resolveInfo.loadLabel(pm).toString()
+            val pkg = resolveInfo.activityInfo.packageName
+            val icon = resolveInfo.loadIcon(pm)
+            appList.addView(createAppPickerItem(AppInfo(label, pkg, icon), slotIndex))
+        }
+
+        scrollView.addView(appList)
+        container.addView(title)
+        container.addView(scrollView)
+        container.addView(backButton)
+    }
+
+    private fun saveFavouriteApp(slotIndex: Int, packageName: String?) {
+        val editor = favouritePrefs.edit()
+        if (packageName == null) {
+            editor.remove("fav_slot_$slotIndex")
+        } else {
+            editor.putString("fav_slot_$slotIndex", packageName)
+        }
+        editor.apply()
+    }
+
+    private fun loadFavouriteApp(slotIndex: Int): AppInfo? {
+        val packageName = favouritePrefs.getString("fav_slot_$slotIndex", null) ?: return null
+        return try {
+            val pm = service.packageManager
+            val appInfo = pm.getApplicationInfo(packageName, 0)
+            AppInfo(
+                pm.getApplicationLabel(appInfo).toString(),
+                packageName,
+                pm.getApplicationIcon(appInfo)
+            )
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    private fun launchApp(packageName: String) {
+        val launchIntent = service.packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            service.startActivity(launchIntent)
+        }
+    }
+
     private fun animatePopupIn(view: View?, onComplete: (() -> Unit)? = null) {
         if (view == null) {
             onComplete?.invoke()
@@ -300,76 +495,27 @@ class PopupManager(
 
     private fun populateFavouriteList() {
         val root = favouritePopup ?: return
+        val container = root.findViewById<LinearLayout>(R.id.favoriteContentContainer) ?: return
+        container.removeAllViews()
 
-        // Try to find a container in the layout by name; fallback to root if not present
-        val resId = service.resources.getIdentifier("fav_container", "id", service.packageName)
-        val container = if (resId != 0) root.findViewById<ViewGroup>(resId) else (root as? ViewGroup)
-
-        val pm = service.packageManager
-        val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        val apps = pm.queryIntentActivities(intent, 0)
-
-        val parent = container as? ViewGroup ?: return
-        parent.removeAllViews()
-
-        val itemPadding = (8 * service.resources.displayMetrics.density).toInt()
-
-        apps.forEach { ri: ResolveInfo ->
-            val label = ri.loadLabel(pm).toString()
-            val icon = ri.loadIcon(pm)
-            val pkg = ri.activityInfo.packageName
-
-            val appInfo = AppInfo(label, pkg, icon)
-
-            val item = LinearLayout(service).apply {
-                orientation = LinearLayout.HORIZONTAL
-                setPadding(itemPadding, itemPadding, itemPadding, itemPadding)
-                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                isClickable = true
-                isFocusable = true
-            }
-
-            val iv = ImageView(service).apply {
-                setImageDrawable(icon)
-                val size = (40 * service.resources.displayMetrics.density).toInt()
-                layoutParams = LinearLayout.LayoutParams(size, size)
-            }
-
-            val tv = TextView(service).apply {
-                text = label
-                setPadding(itemPadding, 0, 0, 0)
-                layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            }
-
-            item.addView(iv)
-            item.addView(tv)
-
-            item.setOnClickListener {
-                // Launch the selected app
-                val launch = Intent(Intent.ACTION_MAIN).apply {
-                    addCategory(Intent.CATEGORY_LAUNCHER)
-                    component = android.content.ComponentName(pkg, ri.activityInfo.name)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                try {
-                    service.startActivity(launch)
-                } catch (t: Throwable) {
-                    // fallback: try package launch intent
-                    val pmLaunch = service.packageManager.getLaunchIntentForPackage(pkg)
-                    pmLaunch?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    pmLaunch?.let { service.startActivity(it) }
-                }
-                hideAllPopup()
-            }
-
-            item.setOnLongClickListener {
-                // Long-press to create a pinned shortcut
-                ShortcutUtils.createPinnedShortcut(service, appInfo)
-                hideAllPopup()
-                true
-            }
-
-            parent.addView(item)
+        val title = TextView(service).apply {
+            text = "Favourite apps"
+            textSize = 16f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(0, 0, 0, 8)
+            setTextColor(android.graphics.Color.WHITE)
         }
+
+        val grid = GridLayout(service).apply {
+            columnCount = 3
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        }
+
+        repeat(9) { index ->
+            grid.addView(createFavouriteSlotView(index, loadFavouriteApp(index)))
+        }
+
+        container.addView(title)
+        container.addView(grid)
     }
 }
