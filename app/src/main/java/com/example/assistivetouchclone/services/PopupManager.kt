@@ -115,6 +115,7 @@ class PopupManager(
 
         isTransitioning = true
         hideAllPopup(showFloatingIcon = false, animate = false)
+        showDimView()
 
         val localizedContext = getLocalizedServiceContext()
         settingPopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_setting_popup, null)
