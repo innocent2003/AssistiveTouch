@@ -78,6 +78,11 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this, ProductListActivity::class.java))
         }
 
+        val txtTitle3 = findViewById<TextView>(R.id.txtTitle3)
+        txtTitle3.setOnClickListener {
+            startActivity(Intent(this, SystemActionActivity::class.java))
+        }
+
         cardMenu4.setOnClickListener {
             startActivity(Intent(this, ProductListActivity::class.java))
         }
