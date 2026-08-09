@@ -1,5 +1,6 @@
 package com.example.assistivetouchclone
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,8 @@ import androidx.viewpager2.widget.ViewPager2
 
 class MenuActivity : BaseActivity() {
 
+    private val selectedPage2Actions = mutableMapOf<Int, SystemActionItem?>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
@@ -27,22 +30,26 @@ class MenuActivity : BaseActivity() {
         // Số lượng trang
         val pages = 2
 
-        // Thiết lập Adapter cho ViewPager2
-        viewPager.adapter = MenuPagerAdapter(pages) { pageIndex, itemIndex ->
-
-            when (pageIndex) {
-
-                // Trang 1
-                0 -> {
-                    handleMainPageClick(itemIndex)
+        val adapter = MenuPagerAdapter(
+            pages,
+            selectedPage2Actions,
+            onItemClick = { pageIndex, itemIndex ->
+                when (pageIndex) {
+                    0 -> handleMainPageClick(itemIndex)
+                    1 -> handleSecondaryPageClick(itemIndex)
                 }
-
-                // Trang 2
-                1 -> {
-                    handleSecondaryPageClick(itemIndex)
+            },
+            onItemLongClick = { pageIndex, itemIndex ->
+                if (pageIndex == 1) {
+                    handleSecondaryPageLongClick(itemIndex)
+                } else {
+                    false
                 }
             }
-        }
+        )
+
+        // Thiết lập Adapter cho ViewPager2
+        viewPager.adapter = adapter
 
         // Hiển thị trang hiện tại
         pageIndicator.text = "1/$pages MAIN"
@@ -166,12 +173,42 @@ class MenuActivity : BaseActivity() {
      * Xử lý sự kiện click trên trang phụ
      */
     private fun handleSecondaryPageClick(index: Int) {
+        val assignedAction = selectedPage2Actions[index]
 
-        Toast.makeText(
-            this,
-            "Secondary page item ${index + 1}",
-            Toast.LENGTH_SHORT
-        ).show()
+        if (assignedAction != null) {
+            assignedAction.action(this)
+            return
+        }
+
+        val actions = SystemActionCatalog.getSystemActions()
+
+        if (index in actions.indices) {
+            showSystemActionPicker(index, actions)
+        } else {
+            Toast.makeText(this, "Chưa cấu hình", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handleSecondaryPageLongClick(index: Int): Boolean {
+        if (selectedPage2Actions.containsKey(index)) {
+            selectedPage2Actions.remove(index)
+            (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
+            return true
+        }
+
+        return false
+    }
+
+    private fun showSystemActionPicker(index: Int, actions: List<SystemActionItem>) {
+        val labels = actions.map { it.label }.toTypedArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Chọn hành động")
+            .setItems(labels) { _, which ->
+                selectedPage2Actions[index] = actions[which]
+                (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
+            }
+            .show()
     }
 
 
@@ -180,8 +217,11 @@ class MenuActivity : BaseActivity() {
      */
     private class MenuPagerAdapter(
         private val pages: Int,
+        private val selectedPage2Actions: Map<Int, SystemActionItem?>,
         private val onItemClick:
-            (pageIndex: Int, itemIndex: Int) -> Unit
+            (pageIndex: Int, itemIndex: Int) -> Unit,
+        private val onItemLongClick:
+            (pageIndex: Int, itemIndex: Int) -> Boolean
     ) : RecyclerView.Adapter<MenuPagerAdapter.PageViewHolder>() {
 
 
@@ -216,7 +256,9 @@ class MenuActivity : BaseActivity() {
             // position chính là pageIndex
             holder.bind(
                 position,
-                onItemClick
+                selectedPage2Actions,
+                onItemClick,
+                onItemLongClick
             )
         }
 
@@ -296,8 +338,11 @@ class MenuActivity : BaseActivity() {
              */
             fun bind(
                 pageIndex: Int,
+                selectedPage2Actions: Map<Int, SystemActionItem?>,
                 onItemClick:
-                    (pageIndex: Int, itemIndex: Int) -> Unit
+                    (pageIndex: Int, itemIndex: Int) -> Unit,
+                onItemLongClick:
+                    (pageIndex: Int, itemIndex: Int) -> Boolean
             ) {
 
 
@@ -345,24 +390,12 @@ class MenuActivity : BaseActivity() {
                 // TRANG 2
                 // ==============================
 
-                val labelsPage1 = listOf(
+                val labelsPage1 = List(9) { index ->
+                    selectedPage2Actions[index]?.label ?: "+"
+                }
 
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+"
-                )
-
-
-                val iconsPage1 = List(9) {
-
-                    android.R.drawable.ic_input_add
-
+                val iconsPage1 = List(9) { index ->
+                    selectedPage2Actions[index]?.iconRes ?: android.R.drawable.ic_input_add
                 }
 
 
@@ -427,11 +460,11 @@ class MenuActivity : BaseActivity() {
 
                     // Xử lý sự kiện click
                     itemLayouts[i].setOnClickListener {
+                        onItemClick(pageIndex, idx)
+                    }
 
-                        onItemClick(
-                            pageIndex,
-                            idx
-                        )
+                    itemLayouts[i].setOnLongClickListener {
+                        onItemLongClick(pageIndex, idx)
                     }
                 }
             }
