@@ -2,6 +2,7 @@ package com.example.assistivetouchclone
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,13 +24,13 @@ class SystemActionActivity : BaseActivity() {
         btnBack.setOnClickListener { finish() }
 
         val actions = listOf(
-            SystemActionItem("Open Wifi") { SystemAction.openWifi(this) },
-            SystemActionItem("Open Bluetooth") { SystemAction.openBluetooth(this) },
-            SystemActionItem("Open Display") { SystemAction.openDisplay(this) },
-            SystemActionItem("Volume Up") { SystemAction.volumeUp(this) },
-            SystemActionItem("Volume Down") { SystemAction.volumeDown(this) },
-            SystemActionItem("Toggle Silent") { SystemAction.toggleSilent(this) },
-            SystemActionItem("Toggle Flash") { SystemAction.toggleFlash(this) }
+            SystemActionItem("Open Wifi", R.drawable.wifi_24px) { SystemAction.openWifi(this) },
+            SystemActionItem("Open Bluetooth", R.drawable.bluetooth_24px) { SystemAction.openBluetooth(this) },
+            SystemActionItem("Open Display", R.drawable.mobile_rotate_lock_24px) { SystemAction.openDisplay(this) },
+            SystemActionItem("Volume Up", R.drawable.volume_up_24px) { SystemAction.volumeUp(this) },
+            SystemActionItem("Volume Down", R.drawable.volume_down_24px) { SystemAction.volumeDown(this) },
+            SystemActionItem("Toggle Silent", R.drawable.notifications_active_24px) { SystemAction.toggleSilent(this) },
+            SystemActionItem("Toggle Flash", R.drawable.highlight_24px) { SystemAction.toggleFlash(this) }
         )
 
         actionsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -39,6 +40,7 @@ class SystemActionActivity : BaseActivity() {
 
 data class SystemActionItem(
     val label: String,
+    val iconRes: Int,
     val action: () -> Unit
 )
 
@@ -59,9 +61,11 @@ class SystemActionAdapter(
     override fun getItemCount(): Int = actions.size
 
     class SystemActionViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
+        private val actionIcon: ImageView = itemView.findViewById(R.id.actionIcon)
         private val actionLabel: TextView = itemView.findViewById(R.id.actionLabel)
 
         fun bind(item: SystemActionItem) {
+            actionIcon.setImageResource(item.iconRes)
             actionLabel.text = item.label
             itemView.setOnClickListener { item.action() }
         }
