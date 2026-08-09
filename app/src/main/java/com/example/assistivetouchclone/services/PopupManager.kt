@@ -21,6 +21,7 @@ import android.widget.TextView
 import com.example.assistivetouchclone.LocaleHelper
 import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
+import com.example.assistivetouchclone.SystemActionSelectionStore
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
 import com.example.assistivetouchclone.utils.ShortcutUtils
@@ -143,35 +144,33 @@ class PopupManager(
         }
 
         val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
-        val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
-        val btnBluetooth = settingPopup!!.findViewById<LinearLayout>(R.id.btnBluetooth)
-        val btnRotate = settingPopup!!.findViewById<LinearLayout>(R.id.btnRotate)
-        val btnLocation = settingPopup!!.findViewById<LinearLayout>(R.id.btnLocation)
-        val btnVolumeUp = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeUp)
-        val btnVolumeDown = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeDown)
-        val btnSilent = settingPopup!!.findViewById<LinearLayout>(R.id.btnSilent)
-        val btnFlash = settingPopup!!.findViewById<LinearLayout>(R.id.btnFlash)
+        val tilesContainer = settingPopup!!.findViewById<GridLayout>(R.id.tilesContainer)
 
         btnBack.setOnClickListener {
             hideAllPopup()
             showPopup()
         }
 
-        btnWifi.setOnClickListener { SystemAction.openWifi(service) }
-        btnBluetooth.setOnClickListener { SystemAction.openBluetooth(service) }
-        btnRotate.setOnClickListener { SystemAction.openDisplay(service) }
+        val actions = SystemActionCatalog.getSystemActions()
 
-        btnLocation.setOnClickListener {
-            service.startActivity(
-                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+        tilesContainer.removeAllViews()
+        actions.forEachIndexed { index, actionItem ->
+            val tile = LayoutInflater.from(localizedContext)
+                .inflate(R.layout.layout_system_action_tile, tilesContainer, false)
+
+            val icon = tile.findViewById<ImageView>(R.id.tileIcon)
+            val label = tile.findViewById<TextView>(R.id.tileLabel)
+
+            icon.setImageResource(actionItem.iconRes)
+            label.text = actionItem.label
+            tile.setOnClickListener {
+                SystemActionSelectionStore.set(index, actionItem)
+                actionItem.action(service)
+                hideAllPopup()
+            }
+
+            tilesContainer.addView(tile)
         }
-
-        btnVolumeUp.setOnClickListener { SystemAction.volumeUp(service) }
-        btnVolumeDown.setOnClickListener { SystemAction.volumeDown(service) }
-        btnSilent.setOnClickListener { SystemAction.toggleSilent(service) }
-        btnFlash.setOnClickListener { SystemAction.toggleFlash(service) }
     }
 
     fun lockScreen() {

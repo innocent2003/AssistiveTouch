@@ -3,252 +3,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="290dp"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="12dp"
     android:background="@drawable/bg_popup">
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp">
 
-        <!-- Wifi -->
-        <LinearLayout
-            android:id="@+id/btnWifi"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/wifi_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_wifi"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <!-- Bluetooth -->
-        <LinearLayout
-            android:id="@+id/btnBluetooth"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/bluetooth_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_bluetooth"
-                android:textColor="@android:color/white"
-                android:textAlignment="center"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <!-- Rotate -->
-        <LinearLayout
-            android:id="@+id/btnRotate"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/mobile_rotate_lock_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_rotate_lock"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Location -->
-        <LinearLayout
-            android:id="@+id/btnLocation"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/near_me_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_location"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <LinearLayout
+        <ImageView
             android:id="@+id/btnBackSetting"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/arrow_left_alt_24px"
+            android:tint="@android:color/white"
+            android:clickable="true"
+            android:focusable="true" />
 
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/arrow_left_alt_24px"
-                app:tint="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Chọn hành động"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text=""
-                android:textColor="@android:color/white"
-                android:textAlignment="center"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Volume Up -->
-        <LinearLayout
-            android:id="@+id/btnVolumeUp"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/volume_up_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_volume_up"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Volume Down -->
-
-
-        <!-- Silent -->
-        <LinearLayout
-            android:id="@+id/btnSilent"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/notifications_active_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_normal"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <!-- Flash -->
-        <LinearLayout
-            android:id="@+id/btnFlash"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/highlight_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_flash"
-                android:textColor="@android:color/white"
-                android:textAlignment="center"
-                android:textSize="15sp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/btnVolumeDown"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:src="@drawable/volume_down_24px"
-                app:tint="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/popup_volume_down"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-
-
-    </GridLayout>
-
+    <GridLayout
+        android:id="@+id/tilesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:useDefaultMargins="true" />
 
 </LinearLayout>

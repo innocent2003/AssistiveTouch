@@ -15,8 +15,6 @@ import androidx.viewpager2.widget.ViewPager2
 
 class MenuActivity : BaseActivity() {
 
-    private val selectedPage2Actions = mutableMapOf<Int, SystemActionItem?>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
@@ -32,7 +30,6 @@ class MenuActivity : BaseActivity() {
 
         val adapter = MenuPagerAdapter(
             pages,
-            selectedPage2Actions,
             onItemClick = { pageIndex, itemIndex ->
                 when (pageIndex) {
                     0 -> handleMainPageClick(itemIndex)
@@ -173,7 +170,7 @@ class MenuActivity : BaseActivity() {
      * Xử lý sự kiện click trên trang phụ
      */
     private fun handleSecondaryPageClick(index: Int) {
-        val assignedAction = selectedPage2Actions[index]
+        val assignedAction = SystemActionSelectionStore.get(index)
 
         if (assignedAction != null) {
             assignedAction.action(this)
@@ -190,8 +187,8 @@ class MenuActivity : BaseActivity() {
     }
 
     private fun handleSecondaryPageLongClick(index: Int): Boolean {
-        if (selectedPage2Actions.containsKey(index)) {
-            selectedPage2Actions.remove(index)
+        if (SystemActionSelectionStore.get(index) != null) {
+            SystemActionSelectionStore.clear(index)
             (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
             return true
         }
@@ -205,7 +202,7 @@ class MenuActivity : BaseActivity() {
         AlertDialog.Builder(this)
             .setTitle("Chọn hành động")
             .setItems(labels) { _, which ->
-                selectedPage2Actions[index] = actions[which]
+                SystemActionSelectionStore.set(index, actions[which])
                 (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
             }
             .show()
@@ -217,7 +214,6 @@ class MenuActivity : BaseActivity() {
      */
     private class MenuPagerAdapter(
         private val pages: Int,
-        private val selectedPage2Actions: Map<Int, SystemActionItem?>,
         private val onItemClick:
             (pageIndex: Int, itemIndex: Int) -> Unit,
         private val onItemLongClick:
@@ -256,7 +252,6 @@ class MenuActivity : BaseActivity() {
             // position chính là pageIndex
             holder.bind(
                 position,
-                selectedPage2Actions,
                 onItemClick,
                 onItemLongClick
             )
@@ -338,7 +333,6 @@ class MenuActivity : BaseActivity() {
              */
             fun bind(
                 pageIndex: Int,
-                selectedPage2Actions: Map<Int, SystemActionItem?>,
                 onItemClick:
                     (pageIndex: Int, itemIndex: Int) -> Unit,
                 onItemLongClick:
@@ -391,11 +385,11 @@ class MenuActivity : BaseActivity() {
                 // ==============================
 
                 val labelsPage1 = List(9) { index ->
-                    selectedPage2Actions[index]?.label ?: "+"
+                    SystemActionSelectionStore.get(index)?.label ?: "+"
                 }
 
                 val iconsPage1 = List(9) { index ->
-                    selectedPage2Actions[index]?.iconRes ?: android.R.drawable.ic_input_add
+                    SystemActionSelectionStore.get(index)?.iconRes ?: android.R.drawable.ic_input_add
                 }
 
 
