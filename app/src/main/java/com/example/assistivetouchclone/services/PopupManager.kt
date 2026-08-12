@@ -21,6 +21,7 @@ import android.widget.TextView
 import com.example.assistivetouchclone.LocaleHelper
 import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
+import com.example.assistivetouchclone.SystemActionCatalog
 import com.example.assistivetouchclone.SystemActionSelectionStore
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo

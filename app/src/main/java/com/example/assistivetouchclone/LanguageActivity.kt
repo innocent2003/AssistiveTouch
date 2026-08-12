@@ -15,7 +15,7 @@ class LanguageActivity : BaseActivity() {
         setContentView(R.layout.activity_language)
 
         val preferences = getSharedPreferences("AssistiveSettings", MODE_PRIVATE)
-
+4
         languageGroup = findViewById(R.id.languageRadioGroup)
         val continueButton = findViewById<Button>(R.id.btnContinue)
 
