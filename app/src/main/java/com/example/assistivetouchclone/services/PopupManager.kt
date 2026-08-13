@@ -130,7 +130,7 @@ class PopupManager(
         settingPopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_setting_popup, null)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
-            500,
+            600,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
