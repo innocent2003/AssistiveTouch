@@ -7,15 +7,6 @@
     android:background="@drawable/bg_popup"
     android:padding="12dp">
 
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/favourite_apps"-->
-<!--        android:textStyle="bold"-->
-<!--        android:textSize="18sp"-->
-<!--        android:gravity="center"-->
-<!--        android:paddingBottom="12dp"/>-->
-
     <LinearLayout
         android:id="@+id/favoriteContentContainer"
         android:layout_width="match_parent"

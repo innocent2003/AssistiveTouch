@@ -498,14 +498,6 @@ class PopupManager(
         val container = root.findViewById<LinearLayout>(R.id.favoriteContentContainer) ?: return
         container.removeAllViews()
 
-        val title = TextView(service).apply {
-            text = "Favourite apps"
-            textSize = 16f
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setPadding(0, 0, 0, 8)
-            setTextColor(android.graphics.Color.WHITE)
-        }
-
         val grid = GridLayout(service).apply {
             columnCount = 3
             layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -515,7 +507,6 @@ class PopupManager(
             grid.addView(createFavouriteSlotView(index, loadFavouriteApp(index)))
         }
 
-        container.addView(title)
         container.addView(grid)
     }
 }
