@@ -263,6 +263,51 @@ class PopupManager(
         populateFavouriteList()
     }
 
+    private fun createFavouriteBackButton(): View {
+        val item = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(8, 8, 8, 8)
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = (96 * service.resources.displayMetrics.density).toInt()
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+            setBackgroundResource(android.R.color.transparent)
+            isClickable = true
+            isFocusable = true
+        }
+
+        val icon = ImageView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                (40 * service.resources.displayMetrics.density).toInt(),
+                (40 * service.resources.displayMetrics.density).toInt()
+            )
+            setImageResource(R.drawable.arrow_left_alt_24px)
+            setColorFilter(android.graphics.Color.WHITE)
+        }
+
+        val label = TextView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            text = ""
+            textSize = 13f
+            gravity = Gravity.CENTER
+            maxLines = 2
+            ellipsize = android.text.TextUtils.TruncateAt.END
+        }
+
+        item.addView(icon)
+        item.addView(label)
+
+        item.setOnClickListener {
+            hideAllPopup()
+            showPopup()
+        }
+
+        return item
+    }
+
     private fun createFavouriteSlotView(index: Int, appInfo: AppInfo?): View {
         val item = LinearLayout(service).apply {
             orientation = LinearLayout.VERTICAL
@@ -503,8 +548,15 @@ class PopupManager(
             layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
 
-        repeat(9) { index ->
+        repeat(4) { index ->
             grid.addView(createFavouriteSlotView(index, loadFavouriteApp(index)))
+        }
+
+        grid.addView(createFavouriteBackButton())
+
+        repeat(4) { index ->
+            val slotIndex = index + 4
+            grid.addView(createFavouriteSlotView(slotIndex, loadFavouriteApp(slotIndex)))
         }
 
         container.addView(grid)
