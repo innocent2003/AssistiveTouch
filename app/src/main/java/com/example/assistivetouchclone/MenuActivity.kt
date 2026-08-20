@@ -286,6 +286,8 @@ class MenuActivity : BaseActivity() {
 
                 for (i in 0 until 9) {
 
+                    itemLayouts[i].visibility =
+                        if (pageIndex == 1 && i == 4) View.INVISIBLE else View.VISIBLE
 
                     // Gán TextView
                     texts[i].text = labels[i]

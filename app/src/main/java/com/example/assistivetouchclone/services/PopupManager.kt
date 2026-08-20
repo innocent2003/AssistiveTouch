@@ -37,6 +37,7 @@ class PopupManager(
 ) {
     private companion object {
         const val ACTION_SLOT_COUNT = 9
+        const val CENTER_SLOT_INDEX = 4
     }
 
     private var favouritePopup: View? = null
@@ -145,20 +146,21 @@ class PopupManager(
         grid.columnCount = 3
 
         repeat(ACTION_SLOT_COUNT) { slotIndex ->
+            if (pageIndex == 1 && slotIndex == CENTER_SLOT_INDEX) {
+                grid.addView(createPopupButton(
+                    R.drawable.arrow_left_alt_24px,
+                    "",
+                    backAction ?: {}
+                ))
+                return@repeat
+            }
+
             val actionIndex = preferences.getInt(
                 "page${pageIndex + 1}_action_$slotIndex",
                 -1
             )
             val action = actions.getOrNull(actionIndex)
             grid.addView(createActionSlotView(action, slotIndex))
-        }
-
-        if (backAction != null) {
-            grid.addView(createPopupButton(
-                R.drawable.arrow_left_alt_24px,
-                "",
-                backAction
-            ))
         }
     }
 
