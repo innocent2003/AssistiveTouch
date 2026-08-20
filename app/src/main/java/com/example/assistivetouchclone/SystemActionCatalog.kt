@@ -11,7 +11,11 @@ object SystemActionCatalog {
         SystemActionItem("Volume Up", R.drawable.volume_up_24px) { context -> SystemAction.volumeUp(context) },
         SystemActionItem("Volume Down", R.drawable.volume_down_24px) { context -> SystemAction.volumeDown(context) },
         SystemActionItem("Toggle Silent", R.drawable.notifications_active_24px) { context -> SystemAction.toggleSilent(context) },
-        SystemActionItem("Toggle Flash", R.drawable.highlight_24px) { context -> SystemAction.toggleFlash(context) }
+        SystemActionItem("Toggle Flash", R.drawable.highlight_24px) { context -> SystemAction.toggleFlash(context) },
+        SystemActionItem("Favourite", android.R.drawable.star_big_on) { },
+        SystemActionItem("Setting", android.R.drawable.ic_menu_manage) { },
+        SystemActionItem("Lock", android.R.drawable.ic_lock_lock) { context -> SystemAction.lockScreen(context) },
+        SystemActionItem("Home", android.R.drawable.ic_menu_view) { context -> SystemAction.openHome(context) }
     )
 }
 

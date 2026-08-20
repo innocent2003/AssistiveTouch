@@ -1,16 +1,46 @@
 package com.example.assistivetouchclone.utils
 
 import android.app.NotificationManager
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.os.Build
 import android.provider.Settings
+import com.example.assistivetouchclone.services.MyAdminReceiver
 
 object SystemAction {
 
     private var isFlashOn = false
+
+    fun openHome(context: Context) {
+        context.startActivity(
+            Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+    }
+
+    fun lockScreen(context: Context) {
+        val devicePolicyManager =
+            context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        val component = ComponentName(context, MyAdminReceiver::class.java)
+
+        if (devicePolicyManager.isAdminActive(component)) {
+            devicePolicyManager.lockNow()
+        }
+    }
+
+    fun openSettings(showSettings: () -> Unit) {
+        showSettings()
+    }
+
+    fun openFavourite(showFavourite: () -> Unit) {
+        showFavourite()
+    }
 
     fun toggleFlash(context: Context) {
 

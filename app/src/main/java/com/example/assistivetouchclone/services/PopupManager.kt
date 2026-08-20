@@ -1,8 +1,6 @@
 package com.example.assistivetouchclone.services
 
 import android.app.Service
-import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -82,19 +80,21 @@ class PopupManager(
         val btnScreen = popupView!!.findViewById<LinearLayout>(R.id.btnScreen)
 
         btnHome.setOnClickListener {
-            goHome()
+            SystemAction.openHome(service)
             hidePopup()
         }
 
-        btnSetting.setOnClickListener { showSettingPopup() }
+        btnSetting.setOnClickListener {
+            SystemAction.openSettings { showSettingPopup() }
+        }
 
         btnLock.setOnClickListener {
-            lockScreen()
+            SystemAction.lockScreen(service)
             hidePopup()
         }
 
         btnFavourite.setOnClickListener {
-            showFavouritePopup()
+            SystemAction.openFavourite { showFavouritePopup() }
         }
 
         btnScreen.setOnClickListener {
@@ -172,19 +172,6 @@ class PopupManager(
         btnVolumeDown.setOnClickListener { SystemAction.volumeDown(service) }
         btnSilent.setOnClickListener { SystemAction.toggleSilent(service) }
         btnFlash.setOnClickListener { SystemAction.toggleFlash(service) }
-    }
-
-    fun lockScreen() {
-        val dpm = service.getSystemService(Service.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        val component = ComponentName(service, MyAdminReceiver::class.java)
-        if (dpm.isAdminActive(component)) dpm.lockNow()
-    }
-
-    private fun goHome() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        service.startActivity(intent)
     }
 
     fun showDimView() {
