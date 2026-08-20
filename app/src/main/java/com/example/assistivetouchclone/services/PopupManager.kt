@@ -19,6 +19,8 @@ import android.widget.TextView
 import com.example.assistivetouchclone.LocaleHelper
 import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.R
+import com.example.assistivetouchclone.SystemActionCatalog
+import com.example.assistivetouchclone.SystemActionItem
 import com.example.assistivetouchclone.utils.SystemAction
 import com.example.assistivetouchclone.AppInfo
 import com.example.assistivetouchclone.utils.ShortcutUtils
@@ -33,6 +35,10 @@ class PopupManager(
     private val windowManager: WindowManager,
     private val floatingManager: FloatingViewManager
 ) {
+    private companion object {
+        const val ACTION_SLOT_COUNT = 9
+    }
+
     private var favouritePopup: View? = null
     private var settingPopup: View? = null
     private var popupView: View? = null
@@ -73,37 +79,11 @@ class PopupManager(
             isPopupShowing = true
         }
 
-        val btnHome = popupView!!.findViewById<LinearLayout>(R.id.btnHome)
-        val btnSetting = popupView!!.findViewById<LinearLayout>(R.id.btnSetting)
-        val btnLock = popupView!!.findViewById<LinearLayout>(R.id.btnLock)
-        val btnFavourite = popupView!!.findViewById<LinearLayout>(R.id.btnFavourite)
-        val btnScreen = popupView!!.findViewById<LinearLayout>(R.id.btnScreen)
-
-        btnHome.setOnClickListener {
-            SystemAction.openHome(service)
-            hidePopup()
-        }
-
-        btnSetting.setOnClickListener {
-            SystemAction.openSettings { showSettingPopup() }
-        }
-
-        btnLock.setOnClickListener {
-            SystemAction.lockScreen(service)
-            hidePopup()
-        }
-
-        btnFavourite.setOnClickListener {
-            SystemAction.openFavourite { showFavouritePopup() }
-        }
-
-        btnScreen.setOnClickListener {
-            service.startActivity(
-                Intent(service, MainActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-            hidePopup()
-        }
+        populateActionGrid(
+            popupView!!,
+            pageIndex = 0,
+            backAction = null
+        )
     }
 
     fun hidePopup() {
@@ -142,36 +122,130 @@ class PopupManager(
             isPopupShowing = true
         }
 
-        val btnBack = settingPopup!!.findViewById<LinearLayout>(R.id.btnBackSetting)
-        val btnWifi = settingPopup!!.findViewById<LinearLayout>(R.id.btnWifi)
-        val btnBluetooth = settingPopup!!.findViewById<LinearLayout>(R.id.btnBluetooth)
-        val btnRotate = settingPopup!!.findViewById<LinearLayout>(R.id.btnRotate)
-        val btnLocation = settingPopup!!.findViewById<LinearLayout>(R.id.btnLocation)
-        val btnVolumeUp = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeUp)
-        val btnVolumeDown = settingPopup!!.findViewById<LinearLayout>(R.id.btnVolumeDown)
-        val btnSilent = settingPopup!!.findViewById<LinearLayout>(R.id.btnSilent)
-        val btnFlash = settingPopup!!.findViewById<LinearLayout>(R.id.btnFlash)
+        populateActionGrid(
+            settingPopup!!,
+            pageIndex = 1,
+            backAction = {
+                hideAllPopup()
+                showPopup()
+            }
+        )
+    }
 
-        btnBack.setOnClickListener {
-            hideAllPopup()
-            showPopup()
-        }
+    private fun populateActionGrid(
+        popup: View,
+        pageIndex: Int,
+        backAction: (() -> Unit)?
+    ) {
+        val grid = popup.findViewById<GridLayout>(R.id.actionGrid) ?: return
+        val actions = SystemActionCatalog.getSystemActions()
+        val preferences = service.getSharedPreferences("AssistiveSettings", Context.MODE_PRIVATE)
 
-        btnWifi.setOnClickListener { SystemAction.openWifi(service) }
-        btnBluetooth.setOnClickListener { SystemAction.openBluetooth(service) }
-        btnRotate.setOnClickListener { SystemAction.openDisplay(service) }
+        grid.removeAllViews()
+        grid.columnCount = 3
 
-        btnLocation.setOnClickListener {
-            service.startActivity(
-                Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        repeat(ACTION_SLOT_COUNT) { slotIndex ->
+            val actionIndex = preferences.getInt(
+                "page${pageIndex + 1}_action_$slotIndex",
+                -1
             )
+            val action = actions.getOrNull(actionIndex)
+            grid.addView(createActionSlotView(action, slotIndex))
         }
 
-        btnVolumeUp.setOnClickListener { SystemAction.volumeUp(service) }
-        btnVolumeDown.setOnClickListener { SystemAction.volumeDown(service) }
-        btnSilent.setOnClickListener { SystemAction.toggleSilent(service) }
-        btnFlash.setOnClickListener { SystemAction.toggleFlash(service) }
+        if (backAction != null) {
+            grid.addView(createPopupButton(
+                R.drawable.arrow_left_alt_24px,
+                "",
+                backAction
+            ))
+        }
+    }
+
+    private fun createActionSlotView(action: SystemActionItem?, slotIndex: Int): View {
+        val item = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(8, 8, 8, 8)
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = (100 * service.resources.displayMetrics.density).toInt()
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+            isClickable = action != null
+            isFocusable = action != null
+            contentDescription = "Action slot ${slotIndex + 1}"
+        }
+
+        val icon = ImageView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                (38 * service.resources.displayMetrics.density).toInt(),
+                (38 * service.resources.displayMetrics.density).toInt()
+            )
+            setImageResource(action?.iconRes ?: android.R.drawable.ic_input_add)
+            setColorFilter(Color.WHITE)
+            alpha = if (action == null) 0.7f else 1f
+            visibility = if (action == null) View.GONE else View.VISIBLE
+        }
+
+        val label = TextView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            setPadding(0, 8, 0, 0)
+            text = action?.label ?: "+"
+            textSize = 15f
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            maxLines = 2
+            visibility = if (action == null) View.GONE else View.VISIBLE
+        }
+
+        item.addView(icon)
+        item.addView(label)
+        item.setOnClickListener { executePopupAction(action) }
+        return item
+    }
+
+    private fun createPopupButton(iconRes: Int, labelText: String, onClick: () -> Unit): View {
+        val item = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(8, 8, 8, 8)
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = (100 * service.resources.displayMetrics.density).toInt()
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+            isClickable = true
+            isFocusable = true
+        }
+
+        val icon = ImageView(service).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                (38 * service.resources.displayMetrics.density).toInt(),
+                (38 * service.resources.displayMetrics.density).toInt()
+            )
+            setImageResource(iconRes)
+            setColorFilter(Color.WHITE)
+        }
+        val label = TextView(service).apply {
+            text = labelText
+            setTextColor(Color.WHITE)
+        }
+
+        item.addView(icon)
+        item.addView(label)
+        item.setOnClickListener { onClick() }
+        return item
+    }
+
+    private fun executePopupAction(action: SystemActionItem?) {
+        when (action?.label) {
+            "Setting" -> SystemAction.openSettings { showSettingPopup() }
+            "Favourite" -> SystemAction.openFavourite { showFavouritePopup() }
+            else -> action?.action?.invoke(service)
+        }
     }
 
     fun showDimView() {
