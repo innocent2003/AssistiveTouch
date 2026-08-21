@@ -9,6 +9,7 @@ import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.os.Build
 import android.provider.Settings
+import com.example.assistivetouchclone.ProductListActivity
 import com.example.assistivetouchclone.services.MyAdminReceiver
 
 object SystemAction {
@@ -19,6 +20,14 @@ object SystemAction {
         context.startActivity(
             Intent(Intent.ACTION_MAIN).apply {
                 addCategory(Intent.CATEGORY_HOME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+    }
+
+    fun openProductList(context: Context) {
+        context.startActivity(
+            Intent(context, ProductListActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         )

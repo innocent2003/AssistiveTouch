@@ -15,7 +15,10 @@ object SystemActionCatalog {
         SystemActionItem("Favourite", android.R.drawable.star_big_on) { },
         SystemActionItem("Setting", android.R.drawable.ic_menu_manage) { },
         SystemActionItem("Lock", android.R.drawable.ic_lock_lock) { context -> SystemAction.lockScreen(context) },
-        SystemActionItem("Home", android.R.drawable.ic_menu_view) { context -> SystemAction.openHome(context) }
+        SystemActionItem("Home", android.R.drawable.ic_menu_view) { context -> SystemAction.openHome(context) },
+        SystemActionItem("Product List", android.R.drawable.ic_menu_sort_by_size) { context ->
+            SystemAction.openProductList(context)
+        }
     )
 }
 
