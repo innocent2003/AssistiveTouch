@@ -13,9 +13,17 @@ object SystemActionCatalog {
         SystemActionItem("Toggle Silent", R.drawable.notifications_active_24px) { context -> SystemAction.toggleSilent(context) },
         SystemActionItem("Toggle Flash", R.drawable.highlight_24px) { context -> SystemAction.toggleFlash(context) },
         SystemActionItem("Favourite", android.R.drawable.star_big_on) { },
-        SystemActionItem("Setting", android.R.drawable.ic_menu_manage) { },
+        SystemActionItem("Setting", android.R.drawable.ic_menu_manage) { context ->
+            SystemAction.openMainActivity(context)
+        },
+        SystemActionItem("Main Activity", android.R.drawable.ic_menu_view) { context ->
+            SystemAction.openMainActivity(context)
+        },
+        SystemActionItem("Shutdown Android", android.R.drawable.ic_lock_power_off) { context ->
+            SystemAction.shutdownAndroid(context)
+        },
         SystemActionItem("Lock", android.R.drawable.ic_lock_lock) { context -> SystemAction.lockScreen(context) },
-        SystemActionItem("Home", android.R.drawable.ic_menu_view) { context -> SystemAction.openHome(context) },
+        SystemActionItem("Home", R.drawable.home_24px) { context -> SystemAction.openHome(context) },
         SystemActionItem("Product List", android.R.drawable.ic_menu_sort_by_size) { context ->
             SystemAction.openProductList(context)
         }

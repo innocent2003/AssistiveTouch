@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.graphics.PixelFormat
 import android.os.Build
 import android.view.Gravity
@@ -66,6 +67,7 @@ class PopupManager(
 
         val localizedContext = getLocalizedServiceContext()
         popupView = LayoutInflater.from(localizedContext).inflate(R.layout.layout_popup, null)
+        applySelectedPopupColor(popupView!!)
 
         val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
@@ -109,6 +111,7 @@ class PopupManager(
 
         val localizedContext = getLocalizedServiceContext()
         settingPopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_setting_popup, null)
+        applySelectedPopupColor(settingPopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
@@ -309,6 +312,7 @@ class PopupManager(
 
         val localizedContext = getLocalizedServiceContext()
         favouritePopup = LayoutInflater.from(localizedContext).inflate(R.layout.layout_favourite_popup, null)
+        applySelectedPopupColor(favouritePopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
             600,
@@ -532,6 +536,16 @@ class PopupManager(
             editor.putString("fav_slot_$slotIndex", packageName)
         }
         editor.apply()
+    }
+
+    private fun applySelectedPopupColor(popup: View) {
+        val selectedColor = favouritePrefs.getInt("background_color", Color.BLACK)
+        val cornerRadius = 28f * service.resources.displayMetrics.density
+        popup.background = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(selectedColor)
+            setCornerRadius(cornerRadius)
+        }
     }
 
     private fun loadFavouriteApp(slotIndex: Int): AppInfo? {

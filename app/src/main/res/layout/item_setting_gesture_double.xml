@@ -15,11 +15,11 @@
         android:layout_marginStart="20dp"
         android:layout_weight="1"
         android:text="@string/gesture_double_tap"
-        android:textSize="28sp" />
+        android:textSize="22sp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/gesture_none"
         android:textColor="#858585"
-        android:textSize="28sp" />
+        android:textSize="22sp" />
 </LinearLayout>

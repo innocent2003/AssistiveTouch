@@ -9,6 +9,7 @@ import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.os.Build
 import android.provider.Settings
+import com.example.assistivetouchclone.MainActivity
 import com.example.assistivetouchclone.ProductListActivity
 import com.example.assistivetouchclone.services.MyAdminReceiver
 
@@ -31,6 +32,29 @@ object SystemAction {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         )
+    }
+
+    fun openMainActivity(context: Context) {
+        context.startActivity(
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+        )
+    }
+
+    fun shutdownAndroid(context: Context) {
+        try {
+            val shutdownIntent = Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN")
+            shutdownIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            shutdownIntent.putExtra("android.intent.extra.KEY_CONFIRM", true)
+            context.startActivity(shutdownIntent)
+        } catch (_: SecurityException) {
+            android.widget.Toast.makeText(
+                context,
+                "Shutdown is not available for this app",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     fun lockScreen(context: Context) {
