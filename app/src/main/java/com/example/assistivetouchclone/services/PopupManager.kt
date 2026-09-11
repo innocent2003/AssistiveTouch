@@ -70,7 +70,7 @@ class PopupManager(
         applySelectedPopupColor(popupView!!)
 
         val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
-            600,
+            420,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -114,7 +114,7 @@ class PopupManager(
         applySelectedPopupColor(settingPopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
-            600,
+            420,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -174,7 +174,7 @@ class PopupManager(
             setPadding(8, 8, 8, 8)
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
-                height = (100 * service.resources.displayMetrics.density).toInt()
+                height = (84 * service.resources.displayMetrics.density).toInt()
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                 rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
@@ -185,8 +185,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (38 * service.resources.displayMetrics.density).toInt(),
-                (38 * service.resources.displayMetrics.density).toInt()
+                (24 * service.resources.displayMetrics.density).toInt(),
+                (24 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(action?.iconRes ?: android.R.drawable.ic_input_add)
             setColorFilter(Color.WHITE)
@@ -196,9 +196,9 @@ class PopupManager(
 
         val label = TextView(service).apply {
             layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            setPadding(0, 8, 0, 0)
+            setPadding(0, 6, 0, 0)
             text = action?.label ?: "+"
-            textSize = 15f
+            textSize = 12f
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
             maxLines = 2
@@ -218,7 +218,7 @@ class PopupManager(
             setPadding(8, 8, 8, 8)
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
-                height = (100 * service.resources.displayMetrics.density).toInt()
+                height = (84 * service.resources.displayMetrics.density).toInt()
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                 rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
@@ -228,8 +228,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (38 * service.resources.displayMetrics.density).toInt(),
-                (38 * service.resources.displayMetrics.density).toInt()
+                (24 * service.resources.displayMetrics.density).toInt(),
+                (24 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(iconRes)
             setColorFilter(Color.WHITE)
@@ -315,7 +315,7 @@ class PopupManager(
         applySelectedPopupColor(favouritePopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
-            600,
+            420,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -337,7 +337,7 @@ class PopupManager(
             setPadding(8, 8, 8, 8)
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
-                height = (96 * service.resources.displayMetrics.density).toInt()
+                height = (80 * service.resources.displayMetrics.density).toInt()
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                 rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
@@ -348,8 +348,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (40 * service.resources.displayMetrics.density).toInt(),
-                (40 * service.resources.displayMetrics.density).toInt()
+                (24 * service.resources.displayMetrics.density).toInt(),
+                (24 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(R.drawable.arrow_left_alt_24px)
             setColorFilter(android.graphics.Color.WHITE)
@@ -358,7 +358,7 @@ class PopupManager(
         val label = TextView(service).apply {
             layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             text = ""
-            textSize = 13f
+            textSize = 12f
             gravity = Gravity.CENTER
             maxLines = 2
             ellipsize = android.text.TextUtils.TruncateAt.END
@@ -382,7 +382,7 @@ class PopupManager(
             setPadding(8, 8, 8, 8)
             layoutParams = GridLayout.LayoutParams().apply {
                 width = 0
-                height = (96 * service.resources.displayMetrics.density).toInt()
+                height = (80 * service.resources.displayMetrics.density).toInt()
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                 rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
@@ -393,8 +393,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (40 * service.resources.displayMetrics.density).toInt(),
-                (40 * service.resources.displayMetrics.density).toInt()
+                (24 * service.resources.displayMetrics.density).toInt(),
+                (24 * service.resources.displayMetrics.density).toInt()
             )
             setImageDrawable(appInfo?.icon ?: service.getDrawable(android.R.drawable.ic_menu_add))
             alpha = if (appInfo == null) 0.7f else 1f
@@ -402,9 +402,9 @@ class PopupManager(
 
         val label = TextView(service).apply {
             layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            setPadding(0, 8, 0, 0)
+            setPadding(0, 6, 0, 0)
             text = appInfo?.appName ?: ""
-            textSize = 13f
+            textSize = 12f
             gravity = Gravity.CENTER
             maxLines = 2
             ellipsize = android.text.TextUtils.TruncateAt.END

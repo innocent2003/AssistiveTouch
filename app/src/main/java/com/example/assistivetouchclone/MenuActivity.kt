@@ -114,15 +114,23 @@ class MenuActivity : BaseActivity() {
 
     private fun loadActions() {
         val preferences = getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)
+        val editor = preferences.edit()
 
         for (pageIndex in 0 until PAGE_COUNT) {
             for (slotIndex in 0 until PAGE_SLOT_COUNT) {
-                val actionIndex = preferences.getInt(actionKey(pageIndex, slotIndex), -1)
+                val key = actionKey(pageIndex, slotIndex)
+                val actionIndex = if (pageIndex == 0 && !preferences.contains(key)) {
+                    DEFAULT_PAGE_ONE_ACTIONS[slotIndex]?.also { editor.putInt(key, it) } ?: -1
+                } else {
+                    preferences.getInt(key, -1)
+                }
                 if (actionIndex in systemActions.indices) {
                     selectedActions[pageIndex]?.set(slotIndex, systemActions[actionIndex])
                 }
             }
         }
+
+        editor.apply()
     }
 
     private fun actionKey(pageIndex: Int, slotIndex: Int): String =
@@ -132,6 +140,13 @@ class MenuActivity : BaseActivity() {
         private const val STORAGE_NAME = "AssistiveSettings"
         private const val PAGE_COUNT = 2
         private const val PAGE_SLOT_COUNT = 9
+        private val DEFAULT_PAGE_ONE_ACTIONS = mapOf(
+            1 to 11, // Lock
+            3 to 7,  // Favourite
+            4 to 12, // Home
+            5 to 8,  // Setting
+            6 to 9   // Main Activity
+        )
     }
 
 

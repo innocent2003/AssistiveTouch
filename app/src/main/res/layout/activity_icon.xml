@@ -57,53 +57,11 @@
         android:layout_height="match_parent">
 
         <GridLayout
+            android:id="@+id/iconGrid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="4"
             android:padding="15dp">
-
-            <!-- ICON 1 -->
-
-            <ImageView
-                android:id="@+id/icon1"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/mood_bad_24px"
-                android:scaleType="centerInside" />
-
-
-            <!-- ICON 2 -->
-
-            <ImageView
-                android:id="@+id/icon2"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/mood_heart_24px"
-                android:scaleType="centerInside" />
-
-
-            <!-- ICON 3 -->
-
-            <ImageView
-                android:id="@+id/icon3"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/sentiment_calm_24px"
-                android:scaleType="centerInside" />
-
-
-            <!-- ICON 4 -->
-
-            <ImageView
-                android:id="@+id/icon4"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/sentiment_satisfied_24px"
-                android:scaleType="centerInside" />
 
         </GridLayout>
 
