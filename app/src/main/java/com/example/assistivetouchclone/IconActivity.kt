@@ -1,9 +1,12 @@
 package com.example.assistivetouchclone
 
 import android.os.Bundle
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.GridLayout
-import androidx.appcompat.app.AppCompatActivity
 
 class IconActivity : BaseActivity() {
 
@@ -60,20 +63,42 @@ class IconActivity : BaseActivity() {
         setContentView(R.layout.activity_icon)
 
         val iconGrid = findViewById<GridLayout>(R.id.iconGrid)
+        iconGrid.columnCount = 4
+
+        val selectedIcon = getSharedPreferences("AssistiveSettings", MODE_PRIVATE)
+            .getInt("selected_icon", R.drawable.mood_bad_24px)
+
         iconResources.forEach { iconResId ->
-            val iconView = ImageView(this).apply {
+            val cell = FrameLayout(this).apply {
                 layoutParams = GridLayout.LayoutParams().apply {
-                    width = dpToPx(85)
-                    height = dpToPx(85)
-                    setMargins(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10))
+                    width = 0
+                    height = dpToPx(96)
+                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                    setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
                 }
-                scaleType = ImageView.ScaleType.CENTER_INSIDE
-                setImageResource(iconResId)
+                background = iconCellBackground(iconResId == selectedIcon)
                 setOnClickListener { selectIcon(iconResId) }
             }
-            iconGrid.addView(iconView)
+
+            val iconView = ImageView(this).apply {
+                layoutParams = FrameLayout.LayoutParams(dpToPx(72), dpToPx(72), Gravity.CENTER)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                setImageResource(iconResId)
+            }
+            cell.addView(iconView)
+            iconGrid.addView(cell)
         }
     }
+
+    private fun iconCellBackground(isSelected: Boolean): GradientDrawable =
+        GradientDrawable().apply {
+            setColor(Color.TRANSPARENT)
+            cornerRadius = dpToPx(10).toFloat()
+            if (isSelected) {
+                setStroke(dpToPx(2), Color.rgb(66, 160, 255))
+            }
+        }
+
 
     private fun dpToPx(value: Int): Int =
         (value * resources.displayMetrics.density).toInt()

@@ -70,7 +70,7 @@ class PopupManager(
         applySelectedPopupColor(popupView!!)
 
         val popupParams = OverlayUtils.createCenteredOverlayLayoutParams(
-            420,
+            popupWidthPx(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -114,7 +114,7 @@ class PopupManager(
         applySelectedPopupColor(settingPopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
-            420,
+            popupWidthPx(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -185,8 +185,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (24 * service.resources.displayMetrics.density).toInt(),
-                (24 * service.resources.displayMetrics.density).toInt()
+                (20 * service.resources.displayMetrics.density).toInt(),
+                (20 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(action?.iconRes ?: android.R.drawable.ic_input_add)
             setColorFilter(Color.WHITE)
@@ -228,8 +228,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (24 * service.resources.displayMetrics.density).toInt(),
-                (24 * service.resources.displayMetrics.density).toInt()
+                (20 * service.resources.displayMetrics.density).toInt(),
+                (20 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(iconRes)
             setColorFilter(Color.WHITE)
@@ -315,7 +315,7 @@ class PopupManager(
         applySelectedPopupColor(favouritePopup!!)
 
         val lp = OverlayUtils.createCenteredOverlayLayoutParams(
-            420,
+            popupWidthPx(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
@@ -348,8 +348,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (24 * service.resources.displayMetrics.density).toInt(),
-                (24 * service.resources.displayMetrics.density).toInt()
+                (20 * service.resources.displayMetrics.density).toInt(),
+                (20 * service.resources.displayMetrics.density).toInt()
             )
             setImageResource(R.drawable.arrow_left_alt_24px)
             setColorFilter(android.graphics.Color.WHITE)
@@ -375,6 +375,9 @@ class PopupManager(
         return item
     }
 
+    private fun popupWidthPx(): Int =
+        service.resources.displayMetrics.widthPixels - (24 * service.resources.displayMetrics.density).toInt()
+
     private fun createFavouriteSlotView(index: Int, appInfo: AppInfo?): View {
         val item = LinearLayout(service).apply {
             orientation = LinearLayout.VERTICAL
@@ -393,8 +396,8 @@ class PopupManager(
 
         val icon = ImageView(service).apply {
             layoutParams = LinearLayout.LayoutParams(
-                (24 * service.resources.displayMetrics.density).toInt(),
-                (24 * service.resources.displayMetrics.density).toInt()
+                (20 * service.resources.displayMetrics.density).toInt(),
+                (20 * service.resources.displayMetrics.density).toInt()
             )
             setImageDrawable(appInfo?.icon ?: service.getDrawable(android.R.drawable.ic_menu_add))
             alpha = if (appInfo == null) 0.7f else 1f
