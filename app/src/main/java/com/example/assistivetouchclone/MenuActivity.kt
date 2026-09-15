@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,9 @@ class MenuActivity : BaseActivity() {
 
         // Text hiển thị số trang
         val pageIndicator = findViewById<TextView>(R.id.pageIndicator)
+        val backButton = findViewById<ImageButton>(R.id.btnBack)
+        val previousPage = findViewById<ImageButton>(R.id.btnPreviousPage)
+        val nextPage = findViewById<ImageButton>(R.id.btnNextPage)
 
         // Số lượng trang
         val pages = 2
@@ -48,6 +52,14 @@ class MenuActivity : BaseActivity() {
         // Thiết lập Adapter cho ViewPager2
         viewPager.adapter = adapter
 
+        backButton.setOnClickListener { finish() }
+        previousPage.setOnClickListener {
+            viewPager.currentItem = (viewPager.currentItem - 1).coerceAtLeast(0)
+        }
+        nextPage.setOnClickListener {
+            viewPager.currentItem = (viewPager.currentItem + 1).coerceAtMost(pages - 1)
+        }
+
         // Hiển thị trang hiện tại
         pageIndicator.text = "1/$pages MAIN"
 
@@ -58,8 +70,11 @@ class MenuActivity : BaseActivity() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
 
-                    pageIndicator.text =
-                        "${position + 1}/$pages MAIN"
+                    pageIndicator.text = if (position == 0) {
+                        "1/$pages MAIN"
+                    } else {
+                        "${position + 1}/$pages SETTING"
+                    }
                 }
             }
         )
@@ -119,8 +134,13 @@ class MenuActivity : BaseActivity() {
         for (pageIndex in 0 until PAGE_COUNT) {
             for (slotIndex in 0 until PAGE_SLOT_COUNT) {
                 val key = actionKey(pageIndex, slotIndex)
-                val actionIndex = if (pageIndex == 0 && !preferences.contains(key)) {
-                    DEFAULT_PAGE_ONE_ACTIONS[slotIndex]?.also { editor.putInt(key, it) } ?: -1
+                val defaultActions = if (pageIndex == 0) {
+                    DEFAULT_PAGE_ONE_ACTIONS
+                } else {
+                    DEFAULT_PAGE_TWO_ACTIONS
+                }
+                val actionIndex = if (!preferences.contains(key)) {
+                    defaultActions[slotIndex]?.also { editor.putInt(key, it) } ?: -1
                 } else {
                     preferences.getInt(key, -1)
                 }
@@ -146,6 +166,16 @@ class MenuActivity : BaseActivity() {
             4 to 12, // Home
             5 to 8,  // Setting
             6 to 9   // Main Activity
+        )
+        private val DEFAULT_PAGE_TWO_ACTIONS = mapOf(
+            0 to 0,  // Open Wifi
+            1 to 1,  // Open Bluetooth
+            2 to 10, // Shutdown Android
+            3 to 2,  // Open Display
+            5 to 5,  // Toggle Silent
+            6 to 6,  // Toggle Flash
+            7 to 3,  // Volume Up
+            8 to 4   // Volume Down
         )
     }
 
