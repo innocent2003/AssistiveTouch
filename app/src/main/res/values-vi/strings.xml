@@ -20,6 +20,17 @@
     <string name="card_icons">Biểu tượng</string>
     <string name="card_cleaner">Trình dọn dẹp cài đặt</string>
     <string name="card_settings">Cài đặt</string>
+    <string name="settings_title">Cài đặt</string>
+    <string name="background_color">Màu nền</string>
+    <string name="gesture_settings">Cài đặt cử chỉ</string>
+    <string name="gesture_single_tap">Chạm một lần</string>
+    <string name="gesture_double_tap">Chạm hai lần</string>
+    <string name="gesture_hold">Nhấn giữ</string>
+    <string name="gesture_action_menu">Mở menu</string>
+    <string name="gesture_none">Không</string>
+    <string name="gesture_minimize">Ẩn nút</string>
+    <string name="transition_speed">Tốc độ chuyển trang</string>
+    <string name="speed_fast">Nhanh</string>
     <string name="start_floating_button">Bắt đầu Floating Button</string>
     <string name="stop_floating_button">Dừng Floating Button</string>
     <string name="icon_title">Biểu tượng</string>

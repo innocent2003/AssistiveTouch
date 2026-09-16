@@ -6,7 +6,8 @@
     android:rowCount="3"
     android:alignmentMode="alignMargins"
     android:useDefaultMargins="true"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@android:color/white">
 
     <!-- 9 items; adapter will set texts and icons per page -->
     <LinearLayout
@@ -16,20 +17,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon1"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -40,20 +44,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon2"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -64,20 +71,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon3"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -88,20 +98,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon4"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -112,20 +125,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon5"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -136,20 +152,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon6"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -165,15 +184,18 @@
 
         <ImageView
             android:id="@+id/icon7"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -184,20 +206,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon8"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -208,20 +233,23 @@
         android:layout_columnWeight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:background="@drawable/dashed_rounded">
+        android:padding="0dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/icon9"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:background="@drawable/dashed_rounded"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="14sp" />
+            android:textColor="#777777"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

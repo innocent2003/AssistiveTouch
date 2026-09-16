@@ -1,47 +1,63 @@
 package com.example.assistivetouchclone
 
-import android.content.Intent
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
 class MenuActivity : BaseActivity() {
 
+    private val selectedActions = mapOf(
+        0 to mutableMapOf<Int, SystemActionItem?>(),
+        1 to mutableMapOf<Int, SystemActionItem?>()
+    )
+    private val systemActions = SystemActionCatalog.getSystemActions()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
+
+        loadActions()
 
         // ViewPager2
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
         // Text hiển thị số trang
         val pageIndicator = findViewById<TextView>(R.id.pageIndicator)
+        val backButton = findViewById<ImageButton>(R.id.btnBack)
+        val previousPage = findViewById<ImageButton>(R.id.btnPreviousPage)
+        val nextPage = findViewById<ImageButton>(R.id.btnNextPage)
 
         // Số lượng trang
         val pages = 2
 
-        // Thiết lập Adapter cho ViewPager2
-        viewPager.adapter = MenuPagerAdapter(pages) { pageIndex, itemIndex ->
-
-            when (pageIndex) {
-
-                // Trang 1
-                0 -> {
-                    handleMainPageClick(itemIndex)
-                }
-
-                // Trang 2
-                1 -> {
-                    handleSecondaryPageClick(itemIndex)
-                }
+        val adapter = MenuPagerAdapter(
+            pages,
+            selectedActions,
+            onItemClick = { pageIndex, itemIndex ->
+                handlePageClick(pageIndex, itemIndex)
+            },
+            onItemLongClick = { pageIndex, itemIndex ->
+                handlePageLongClick(pageIndex, itemIndex)
             }
+        )
+
+        // Thiết lập Adapter cho ViewPager2
+        viewPager.adapter = adapter
+
+        backButton.setOnClickListener { finish() }
+        previousPage.setOnClickListener {
+            viewPager.currentItem = (viewPager.currentItem - 1).coerceAtLeast(0)
+        }
+        nextPage.setOnClickListener {
+            viewPager.currentItem = (viewPager.currentItem + 1).coerceAtMost(pages - 1)
         }
 
         // Hiển thị trang hiện tại
@@ -54,124 +70,113 @@ class MenuActivity : BaseActivity() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
 
-                    pageIndicator.text =
-                        "${position + 1}/$pages MAIN"
+                    pageIndicator.text = if (position == 0) {
+                        "1/$pages MAIN"
+                    } else {
+                        "${position + 1}/$pages SETTING"
+                    }
                 }
             }
         )
     }
 
-    /**
-     * Xử lý sự kiện click trên trang chính
-     */
-    private fun handleMainPageClick(index: Int) {
+    private fun handlePageClick(pageIndex: Int, index: Int) {
+        val actionsForPage = selectedActions[pageIndex] ?: return
+        val assignedAction = actionsForPage[index]
 
-        when (index) {
+        if (assignedAction != null) {
+            assignedAction.action(this)
+            return
+        }
 
-            // Item 1
-            0 -> {
-                Toast.makeText(
-                    this,
-                    "Chưa cấu hình",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 2 - Khóa
-            1 -> {
-                Toast.makeText(
-                    this,
-                    "Khóa (device lock)",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 3
-            2 -> {
-                Toast.makeText(
-                    this,
-                    "Chưa cấu hình",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 4 - Yêu thích
-            3 -> {
-                Toast.makeText(
-                    this,
-                    "Yêu thích",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 5 - Chính
-            4 -> {
-                startActivity(
-                    Intent(
-                        this,
-                        ProductListActivity::class.java
-                    )
-                )
-            }
-
-            // Item 6 - Cài đặt
-            5 -> {
-                startActivity(
-                    Intent(
-                        this,
-                        IconActivity::class.java
-                    )
-                )
-            }
-
-            // Item 7
-            6 -> {
-                Toast.makeText(
-                    this,
-                    "Chưa cấu hình",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 8 - Màn hình
-            7 -> {
-                Toast.makeText(
-                    this,
-                    "Màn hình action",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Item 9 - Nguồn
-            8 -> {
-                Toast.makeText(
-                    this,
-                    "Nguồn (power)",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            // Trường hợp khác
-            else -> {
-                Toast.makeText(
-                    this,
-                    "Chưa cấu hình",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        if (index < PAGE_SLOT_COUNT) {
+            showSystemActionPicker(pageIndex, index)
+        } else {
+            return
         }
     }
 
-    /**
-     * Xử lý sự kiện click trên trang phụ
-     */
-    private fun handleSecondaryPageClick(index: Int) {
+    private fun handlePageLongClick(pageIndex: Int, index: Int): Boolean {
+        val actionsForPage = selectedActions[pageIndex] ?: return false
+        if (actionsForPage.containsKey(index)) {
+            actionsForPage.remove(index)
+            getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)
+                .edit()
+                .remove(actionKey(pageIndex, index))
+                .apply()
+            (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
+            return true
+        }
 
-        Toast.makeText(
-            this,
-            "Secondary page item ${index + 1}",
-            Toast.LENGTH_SHORT
-        ).show()
+        return false
+    }
+
+    private fun showSystemActionPicker(pageIndex: Int, slotIndex: Int) {
+        val labels = systemActions.map { it.label }.toTypedArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Chọn hành động")
+            .setItems(labels) { _, which ->
+                selectedActions[pageIndex]?.set(slotIndex, systemActions[which])
+                getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)
+                    .edit()
+                    .putInt(actionKey(pageIndex, slotIndex), which)
+                    .apply()
+                (findViewById<ViewPager2>(R.id.viewPager).adapter as? MenuPagerAdapter)?.notifyDataSetChanged()
+            }
+            .show()
+    }
+
+    private fun loadActions() {
+        val preferences = getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)
+        val editor = preferences.edit()
+
+        for (pageIndex in 0 until PAGE_COUNT) {
+            for (slotIndex in 0 until PAGE_SLOT_COUNT) {
+                val key = actionKey(pageIndex, slotIndex)
+                val defaultActions = if (pageIndex == 0) {
+                    DEFAULT_PAGE_ONE_ACTIONS
+                } else {
+                    DEFAULT_PAGE_TWO_ACTIONS
+                }
+                val actionIndex = if (!preferences.contains(key)) {
+                    defaultActions[slotIndex]?.also { editor.putInt(key, it) } ?: -1
+                } else {
+                    preferences.getInt(key, -1)
+                }
+                if (actionIndex in systemActions.indices) {
+                    selectedActions[pageIndex]?.set(slotIndex, systemActions[actionIndex])
+                }
+            }
+        }
+
+        editor.apply()
+    }
+
+    private fun actionKey(pageIndex: Int, slotIndex: Int): String =
+        "page${pageIndex + 1}_action_$slotIndex"
+
+    companion object {
+        private const val STORAGE_NAME = "AssistiveSettings"
+        private const val PAGE_COUNT = 2
+        private const val PAGE_SLOT_COUNT = 9
+        private val DEFAULT_PAGE_ONE_ACTIONS = mapOf(
+            1 to 11, // Lock
+            3 to 7,  // Favourite
+            4 to 12, // Home
+            5 to 8,  // Setting
+            6 to 9   // Main Activity
+        )
+        private val DEFAULT_PAGE_TWO_ACTIONS = mapOf(
+            0 to 0,  // Open Wifi
+            1 to 1,  // Open Bluetooth
+            2 to 10, // Shutdown Android
+            3 to 2,  // Open Display
+            5 to 5,  // Toggle Silent
+            6 to 6,  // Toggle Flash
+            7 to 3,  // Volume Up
+            8 to 4   // Volume Down
+        )
     }
 
 
@@ -180,8 +185,11 @@ class MenuActivity : BaseActivity() {
      */
     private class MenuPagerAdapter(
         private val pages: Int,
+        private val selectedActions: Map<Int, Map<Int, SystemActionItem?>>,
         private val onItemClick:
-            (pageIndex: Int, itemIndex: Int) -> Unit
+            (pageIndex: Int, itemIndex: Int) -> Unit,
+        private val onItemLongClick:
+            (pageIndex: Int, itemIndex: Int) -> Boolean
     ) : RecyclerView.Adapter<MenuPagerAdapter.PageViewHolder>() {
 
 
@@ -216,7 +224,9 @@ class MenuActivity : BaseActivity() {
             // position chính là pageIndex
             holder.bind(
                 position,
-                onItemClick
+                selectedActions,
+                onItemClick,
+                onItemLongClick
             )
         }
 
@@ -296,8 +306,11 @@ class MenuActivity : BaseActivity() {
              */
             fun bind(
                 pageIndex: Int,
+                selectedActions: Map<Int, Map<Int, SystemActionItem?>>,
                 onItemClick:
-                    (pageIndex: Int, itemIndex: Int) -> Unit
+                    (pageIndex: Int, itemIndex: Int) -> Unit,
+                onItemLongClick:
+                    (pageIndex: Int, itemIndex: Int) -> Boolean
             ) {
 
 
@@ -305,97 +318,10 @@ class MenuActivity : BaseActivity() {
                 // TRANG 1
                 // ==============================
 
-                val labelsPage0 = listOf(
-
-                    "",
-                    "Khóa",
-                    "",
-                    "Yêu thích",
-                    "Chính",
-                    "Cài đặt",
-                    "",
-                    "Màn\nhình",
-                    "Nguồn"
-                )
-
-
-                val iconsPage0 = listOf(
-
-                    android.R.drawable.ic_input_add,
-
-                    android.R.drawable.ic_lock_lock,
-
-                    android.R.drawable.ic_input_add,
-
-                    android.R.drawable.star_big_on,
-
-                    android.R.drawable.ic_menu_view,
-
-                    android.R.drawable.ic_menu_manage,
-
-                    android.R.drawable.ic_input_add,
-
-                    android.R.drawable.btn_radio,
-
-                    android.R.drawable.ic_lock_power_off
-                )
-
-
-                // ==============================
-                // TRANG 2
-                // ==============================
-
-                val labelsPage1 = listOf(
-
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+",
-                    "+"
-                )
-
-
-                val iconsPage1 = List(9) {
-
-                    android.R.drawable.ic_input_add
-
-                }
-
-
-                // ==============================
-                // CHỌN DỮ LIỆU THEO TRANG
-                // ==============================
-
-                val labels = if (pageIndex == 0) {
-
-                    labelsPage0
-
-                } else {
-
-                    labelsPage1
-
-                }
-
-
-                /**
-                 * Đổi tên thành iconResources
-                 *
-                 * Tránh trùng với biến:
-                 *
-                 * private val icons: List<ImageView>
-                 */
-                val iconResources = if (pageIndex == 0) {
-
-                    iconsPage0
-
-                } else {
-
-                    iconsPage1
-
+                val actionsForPage = selectedActions[pageIndex].orEmpty()
+                val labels = List(9) { index -> actionsForPage[index]?.label ?: "+" }
+                val iconResources = List(9) { index ->
+                    actionsForPage[index]?.iconRes ?: android.R.drawable.ic_input_add
                 }
 
 
@@ -405,6 +331,8 @@ class MenuActivity : BaseActivity() {
 
                 for (i in 0 until 9) {
 
+                    itemLayouts[i].visibility =
+                        if (pageIndex == 1 && i == 4) View.INVISIBLE else View.VISIBLE
 
                     // Gán TextView
                     texts[i].text = labels[i]
@@ -427,11 +355,11 @@ class MenuActivity : BaseActivity() {
 
                     // Xử lý sự kiện click
                     itemLayouts[i].setOnClickListener {
+                        onItemClick(pageIndex, idx)
+                    }
 
-                        onItemClick(
-                            pageIndex,
-                            idx
-                        )
+                    itemLayouts[i].setOnLongClickListener {
+                        onItemLongClick(pageIndex, idx)
                     }
                 }
             }

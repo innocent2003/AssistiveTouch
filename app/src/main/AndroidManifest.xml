@@ -30,6 +30,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".LauncherActivity"
             android:exported="true">
 
@@ -43,6 +47,11 @@
         <activity
             android:name=".LanguageActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".SystemActionActivity"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity

@@ -1,109 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#FAFAFA">
+    android:background="#F5F5F5">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/language_choose"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp" />
+    <LinearLayout
+        android:id="@+id/languageToolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#1976D2"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/language_choose"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:padding="8dp" />
+    </LinearLayout>
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/languageToolbar"
+        app:layout_constraintBottom_toTopOf="@id/btnContinue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="16dp">
 
-        <RadioGroup
-            android:id="@+id/languageRadioGroup"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/white">
 
-            <RadioButton
-                android:id="@+id/radioDefault"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/language_default"
-                android:checked="true"
-                android:padding="12dp" />
+                android:orientation="vertical"
+                android:padding="12dp">
 
-            <RadioButton
-                android:id="@+id/radioVietnamese"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_vietnamese"
-                android:padding="12dp" />
+                <RadioGroup
+                    android:id="@+id/languageRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radioEnglish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_english"
-                android:padding="12dp" />
+                    <RadioButton
+                        android:id="@+id/radioDefault"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_default"
+                        android:checked="true"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
 
-            <RadioButton
-                android:id="@+id/radioArabic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_arabic"
-                android:padding="12dp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
 
-            <RadioButton
-                android:id="@+id/radioGerman"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_german"
-                android:padding="12dp" />
+                    <RadioButton
+                        android:id="@+id/radioVietnamese"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_vietnamese"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
 
-            <RadioButton
-                android:id="@+id/radioFinnish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_finnish"
-                android:padding="12dp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
 
-            <RadioButton
-                android:id="@+id/radioIndonesian"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_indonesian"
-                android:padding="12dp" />
+                    <RadioButton
+                        android:id="@+id/radioEnglish"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_english"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
 
-            <RadioButton
-                android:id="@+id/radioPortuguese"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_portuguese"
-                android:padding="12dp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
 
-            <RadioButton
-                android:id="@+id/radioMalay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_malay"
-                android:padding="12dp" />
+                    <RadioButton
+                        android:id="@+id/radioArabic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_arabic"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
 
-            <RadioButton
-                android:id="@+id/radioTagalog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/language_tagalog"
-                android:padding="12dp" />
-        </RadioGroup>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioGerman"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_german"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioFinnish"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_finnish"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioIndonesian"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_indonesian"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioPortuguese"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_portuguese"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioMalay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_malay"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0" />
+
+                    <RadioButton
+                        android:id="@+id/radioTagalog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language_tagalog"
+                        android:padding="18dp"
+                        android:background="?attr/selectableItemBackground" />
+                </RadioGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </ScrollView>
 
     <Button
         android:id="@+id/btnContinue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
         android:text="@string/button_continue"
-        android:layout_marginTop="24dp" />
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:background="#1976D2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

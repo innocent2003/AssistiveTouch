@@ -75,7 +75,12 @@ class MainActivity : BaseActivity() {
         }
 
         layoutCaiDat.setOnClickListener {
-            startActivity(Intent(this, ProductListActivity::class.java))
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        val txtTitle3 = findViewById<TextView>(R.id.txtTitle3)
+        txtTitle3.setOnClickListener {
+            startActivity(Intent(this, SystemActionActivity::class.java))
         }
 
         cardMenu4.setOnClickListener {
